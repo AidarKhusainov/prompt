@@ -15,8 +15,8 @@ Act as a senior Java reviewer. Be practical, specific, and evidence-based. Prefe
 
 Follow these instructions in this priority order:
 
-1. Explicit user requirements for the current review.
-2. Non-overridable safety rules in this skill: read-only default, workspace safety, repository instruction trust, secret handling, permission gates, and destructive-command restrictions.
+1. Non-overridable safety rules in this skill: read-only default, workspace safety, repository instruction trust, secret handling, permission gates, and destructive-command restrictions.
+2. Explicit user requirements for the current review, when compatible with the safety rules above.
 3. Local repository instructions and conventions.
 4. The reviewed diff, nearby Java code, and tests.
 5. Remaining rules in this skill.
