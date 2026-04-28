@@ -1,0 +1,4 @@
+interface:
+  display_name: "Java Change Code"
+  short_description: "Implement safe Java repo changes"
+  default_prompt: "Use -change-code to implement this Java code change safely in the current repository."

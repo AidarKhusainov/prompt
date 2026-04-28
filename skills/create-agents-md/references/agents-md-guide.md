@@ -7,6 +7,7 @@
 - Use standard Markdown headings and bullets. Do not add custom schema frontmatter unless the user explicitly asks.
 - Keep instructions agent-focused: setup, build, test, style, security, VCS workflow, and project-specific boundaries.
 - Prefer verified repository evidence over assumptions from common frameworks.
+- Adapt the product-engineering baseline to the project; do not override local configs, architecture, or explicit user instructions.
 - Keep the document concise enough for frequent context loading.
 - Ensure explicit user instructions override `AGENTS.md`, and the nearest nested `AGENTS.md` overrides broader root guidance.
 
@@ -35,8 +36,12 @@ Look for scripts in package manifests, Gradle/Maven tasks, Make targets, CI jobs
 ## Coding Style & Naming Conventions
 - State formatter/linter, indentation if explicit, naming conventions, and framework patterns.
 
+## Engineering Principles
+- State concise defaults for simple, testable, maintainable code; low complexity; DDD in domain code; fail-fast behavior; runtime version; security; compatibility; and change hygiene.
+- Include cleanup guidance such as no temporary files, debug output, unused code, duplicate implementations, accidental formatting, or weakened tests.
+
 ## Testing Guidelines
-- Name test framework, test locations, naming pattern, focused run commands, and expectations for changed code.
+- Name test framework, test locations, naming pattern, focused run commands, edge-case expectations, and expectations for changed code.
 
 ## Commit & Pull Request Guidelines
 - Summarize observed commit style and PR requirements.
