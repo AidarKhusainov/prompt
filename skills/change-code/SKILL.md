@@ -1,6 +1,6 @@
 ---
 name: change-code
-description: Use this skill when the user asks to implement, fix, refactor, or test code in an existing repository and the task is not better covered by a more specific language or framework skill. Detect the project language, build system, test framework, and local conventions before editing. Prefer the Java Maven/Gradle workflow from java-change-code for Java Maven/Gradle work and the React/Next.js workflow from react-next-change-code for React or Next.js work when available.
+description: Use this skill when the user asks to implement, fix, refactor, or test code in an existing repository and the task is not better covered by a more specific language or framework skill. Detect the project language, build system, test framework, and local conventions before editing. Prefer the Java Maven/Gradle workflow from java-change-code for Java Maven/Gradle work and the React/Next.js workflow from react-next-change-code for React or Next.js work when the changed files or requested behavior are React/Next-specific.
 ---
 
 # Change Code Router Skill
@@ -82,8 +82,8 @@ Before editing, read `references/language-routing.md` when the stack is not obvi
 After detecting the stack, read or apply the matching profile when it exists:
 
 - Java Maven/Gradle repository or module: prefer `java-change-code` when available and follow that skill's workflow. If it cannot be activated as a separate skill, apply its Java Maven/Gradle workflow by instruction.
-- React or Next.js project/module: prefer `react-next-change-code` when available and follow that skill's workflow. If it cannot be activated as a separate skill, apply its React/Next.js workflow by instruction. Also read `references/js-ts-quality-rules.md` for general JS/TS rules when relevant.
-- JavaScript or TypeScript project that is not React/Next.js: read `references/js-ts-quality-rules.md`.
+- React or Next.js changed files or behavior: prefer `react-next-change-code` when available and follow that skill's workflow. If it cannot be activated as a separate skill, apply its React/Next.js workflow by instruction. Also read `references/js-ts-quality-rules.md` for general JS/TS rules when relevant.
+- JavaScript or TypeScript project that is not React/Next.js-specific: read `references/js-ts-quality-rules.md`.
 - Bash, POSIX `sh`, Zsh, Makefile shell, or CI shell step: read `references/bash-quality-rules.md`.
 
 Prefer a more specific skill over this generic workflow when all of these are true:
@@ -95,11 +95,11 @@ Prefer a more specific skill over this generic workflow when all of these are tr
 Known routing defaults:
 
 - Java Maven/Gradle repository or module: prefer `java-change-code` when available.
-- React or Next.js project/module: prefer `react-next-change-code` when available.
-- JavaScript or TypeScript project without React/Next.js involvement: read `references/js-ts-quality-rules.md`.
+- React or Next.js UI, routing, server/client boundary, route handler, metadata, caching, accessibility, or frontend-test work: prefer `react-next-change-code` when available.
+- JavaScript or TypeScript project without React/Next.js-specific involvement: read `references/js-ts-quality-rules.md`.
 - Bash or shell script: read `references/bash-quality-rules.md`.
 - Repository instruction generation: use `create-agents-md` when the user asks to create, update, audit, or align `AGENTS.md`.
-- Mixed-language repositories: choose the available profile for the files that actually change, not the dominant language of the repository.
+- Mixed-language repositories: choose the available profile for the files and behavior that actually change, not the dominant language of the repository.
 
 When no specific skill or profile exists, follow the unsupported profile fallback below.
 
