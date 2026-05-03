@@ -1,0 +1,4 @@
+interface:
+  display_name: "React Change Code"
+  short_description: "Implement, review, and test React UI repo changes"
+  default_prompt: "Use react-change-code for React components, hooks, forms, accessibility, rendering behavior, and React frontend tests. Prefer next-change-code for Next.js routing, server/client boundaries, caching, metadata, route handlers, middleware/proxy, or framework runtime behavior."

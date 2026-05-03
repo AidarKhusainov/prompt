@@ -1,0 +1,4 @@
+interface:
+  display_name: "Next.js Change Code"
+  short_description: "Implement, review, and test Next.js repo changes"
+  default_prompt: "Use next-change-code for Next.js App Router, Pages Router, Server/Client boundaries, route handlers, Server Functions, Server Actions, caching, metadata, middleware/proxy, runtime, and framework build behavior. Use react-change-code for React-only UI and js-ts-change-code for generic JS/TS."

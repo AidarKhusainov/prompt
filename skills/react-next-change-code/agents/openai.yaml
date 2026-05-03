@@ -1,4 +1,4 @@
 interface:
-  display_name: "React and Next.js Change Code"
-  short_description: "Implement, review, and test React/Next.js repo changes"
-  default_prompt: "Use react-next-change-code for React/Next-specific repository work. Do not use for generic JS/TS tooling, backend Node workers, or non-React JSX runtimes unless changed behavior crosses React/Next boundaries."
+  display_name: "React and Next.js Compatibility Router"
+  short_description: "Route old React/Next requests to narrower skills"
+  default_prompt: "Use react-next-change-code only as a compatibility router. Prefer react-change-code for React UI/components/hooks/tests, next-change-code for Next.js routing/runtime/cache/server-client behavior, and js-ts-change-code for generic JS/TS."
