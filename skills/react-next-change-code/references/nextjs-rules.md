@@ -11,9 +11,9 @@ Follow these rules unless the user explicitly asks for something different or th
 - Use App Router rules for files under `app/` or `src/app/`.
 - Use Pages Router rules for files under `pages/` or `src/pages/` and preserve legacy data fetching methods when present.
 - Use the term Server Functions for general server-executed functions. Use Server Actions for mutation/action flows, especially forms.
-- For Next.js 16+ projects, account for Cache Components and the `proxy.ts` rename only when the repository has adopted those patterns.
-- Do not rename `middleware.ts` to `proxy.ts`, enable `cacheComponents`, add PPR, change route segment config, or alter runtime target unless the task explicitly requires it.
-- In Next.js 16+ projects that already use `proxy.ts`, remember that proxy runs on the Node.js runtime. Do not assume Edge runtime behavior for proxy code.
+- Account for newer Cache Components and proxy conventions only when the installed Next.js version supports them and the repository has adopted those patterns.
+- Do not rename `middleware.ts` to `proxy.ts`, enable Cache Components, add PPR, change route segment config, or alter runtime target unless the task explicitly requires it.
+- In projects that already use `proxy.ts`, follow the runtime documented for the installed Next.js version. Do not assume Edge runtime behavior for proxy code.
 - Do not assume `next lint` exists. Prefer the repository's configured ESLint/package script because newer Next.js versions use ESLint directly.
 
 ## Project and router detection
@@ -58,9 +58,9 @@ Prefer the closest package/module-level config and scripts in monorepos.
 - Treat caching and rendering mode as public behavior. Do not change them casually.
 - Before editing, identify whether the route is static, dynamic, partially prerendered, cache-component based, or legacy cache-model based.
 - Preserve existing `fetch` cache options, `next.revalidate`, `next.tags`, route segment config, `dynamic`, `revalidate`, `fetchCache`, `runtime`, and `preferredRegion` unless the task requires a change.
-- Do not use Cache Components APIs unless `cacheComponents: true` is enabled or the repository already has a local pattern for them.
-- In modern Next.js projects using Cache Components, use `use cache`, `cacheTag`, `cacheLife`, `revalidateTag`, `updateTag`, and `revalidatePath` only when enabled and consistent with local patterns.
-- In Next.js 16+ projects, do not add single-argument `revalidateTag(tag)` calls. Prefer `revalidateTag(tag, "max")` for stale-while-revalidate behavior, or `updateTag(tag)` only in Server Actions when read-your-own-writes semantics are required.
+- Do not use Cache Components APIs unless they are enabled in Next.js config or the repository already has a local pattern for them.
+- In projects using Cache Components, use `use cache`, `cacheTag`, `cacheLife`, `revalidateTag`, `updateTag`, and `revalidatePath` only when enabled and consistent with local patterns.
+- Do not add deprecated single-argument `revalidateTag(tag)` calls in projects whose installed Next.js version expects a cache-life profile argument. Prefer `revalidateTag(tag, "max")` for stale-while-revalidate behavior when supported, or `updateTag(tag)` only in Server Actions when read-your-own-writes semantics are required.
 - Use `updateTag` for read-your-own-writes only in Server Actions where supported.
 - Use `revalidateTag` for tag-based stale-while-revalidate invalidation when supported and appropriate.
 - Prefer tag-based revalidation over path-based revalidation when the cache ownership is clear.
@@ -80,7 +80,7 @@ Prefer the closest package/module-level config and scripts in monorepos.
 - Do not pass secrets or privileged objects through action arguments or serialized props.
 - For forms, preserve progressive enhancement when the app relies on it.
 - Model pending, optimistic, success, validation-error, and server-error states explicitly.
-- For React 19+ stacks, use action-aware APIs such as `useActionState`, `useOptimistic`, and `useFormStatus` only when the installed stack and project patterns support them.
+- For newer React stacks, use action-aware APIs such as `useActionState`, `useOptimistic`, and `useFormStatus` only when the installed stack and project patterns support them.
 
 ## Route handlers, API routes, and webhooks
 
@@ -120,7 +120,7 @@ Prefer the closest package/module-level config and scripts in monorepos.
 
 - Treat middleware/proxy as security- and routing-sensitive.
 - Preserve matcher patterns, auth checks, redirects, rewrites, headers, cookies, locale handling, and URL normalization unless explicitly requested.
-- For Next.js 16+ projects that already use `proxy.ts`, follow proxy naming and Node.js runtime constraints.
+- For projects that already use `proxy.ts`, follow proxy naming and runtime constraints for the installed Next.js version.
 - Do not rename middleware/proxy files or change skip flags just for style.
 - Do not add heavy work, database calls, or unsupported runtime APIs to middleware/proxy.
 
