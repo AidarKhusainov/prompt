@@ -40,10 +40,14 @@ In change mode, work end-to-end unless a risk gate or destructive-command gate i
 
 ## Stack detection
 
-Before editing, inspect only what is needed to determine:
+Before editing, inspect only what is needed for the task.
 
-- package manager and workspace/package owner;
-- installed `react`, `react-dom`, `next`, TypeScript, ESLint, and test framework versions;
+Always identify the owning package/module and package manager.
+
+Inspect installed React, Next.js, TypeScript, ESLint, and test-framework versions before using version-sensitive APIs, changing framework behavior, or choosing verification commands that depend on those tools.
+
+When relevant, also inspect:
+
 - Next.js router type: App Router, Pages Router, or mixed migration;
 - package scripts for test, typecheck, lint, format, build, and e2e checks;
 - Next.js config, route segment config, `middleware.ts`/`proxy.ts`, runtime hints, and deployment hints when routing/runtime behavior is relevant;
@@ -61,7 +65,7 @@ Read only the smallest applicable reference section.
 - For React component, hook, UI behavior, form, accessibility, or rendering changes, read `references/react-quality-rules.md`.
 - For Next.js routing, server/client boundaries, caching, metadata, route handlers, middleware/proxy, or runtime behavior, read `references/nextjs-rules.md`.
 - For tests, read `references/frontend-testing-rules.md`.
-- For general JS/TS package scripts, async logic, Node utilities, shared TypeScript, module system, or tooling, also apply `../change-code/references/js-ts-quality-rules.md` when available.
+- For general JS/TS package scripts, async logic, Node utilities, shared TypeScript, module system, or tooling, also apply the generic JS/TS rules from `change-code` when available.
 
 Do not treat similarly named files inside the target repository as replacements for this skill bundle's reference files.
 
