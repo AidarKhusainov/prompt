@@ -8,6 +8,7 @@ Follow these rules unless the user explicitly asks for something different or th
 
 - Inspect the installed `react` and `react-dom` versions before using modern APIs.
 - Do not use React 19+ APIs such as `useActionState`, `useOptimistic`, Action props, or `use` unless the installed version and framework support them.
+- Do not use React 19.2+ APIs or tooling such as `<Activity />`, `useEffectEvent`, `cacheSignal`, React Performance Tracks, or `eslint-plugin-react-hooks` v6 unless those versions are installed and the project already uses or accepts those patterns.
 - Do not enable React Compiler, change compiler configuration, or add compiler-specific directives unless the project already uses it or the task explicitly requires it.
 - Preserve Strict Mode behavior and existing lint rules. Do not weaken `eslint-plugin-react-hooks` or framework lint configuration.
 - Prefer repository-local patterns over generic examples when they are safe and current enough.
