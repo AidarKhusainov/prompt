@@ -8,7 +8,7 @@ Use this reference when the repository stack is not obvious, the repository is m
 - Prefer the most specific available skill or profile that matches the requested task.
 - When a repository has multiple build systems, identify the owning module before running commands.
 - When signals conflict, inspect nearby source, tests, package manifests, and CI workflows before editing.
-- When no language-specific profile exists, follow `change-code` and local repository conventions.
+- When no language-specific profile exists, follow `change-code` and local repository conventions without inventing unsupported language rules.
 
 ## Strong signals
 
@@ -56,50 +56,13 @@ Common signals:
 
 Before editing, determine whether the script is POSIX `sh`, Bash, Zsh, or another shell. Do not use Bash-only features in POSIX scripts.
 
-### Python
-
-Use the generic workflow plus repository conventions unless a dedicated Python skill exists.
-
-Common signals:
-
-- `pyproject.toml`, `setup.py`, `setup.cfg`, `requirements*.txt`, `Pipfile`, `poetry.lock`, `uv.lock`
-- `pytest.ini`, `tox.ini`, `noxfile.py`
-- `ruff.toml`, `.ruff.toml`, `mypy.ini`, `.pylintrc`
-- `src/**/*.py`, `tests/**/*.py`
-
-Prefer the environment and commands documented by the repository. Do not create or modify virtual environments unless the user asked or repository docs require it.
-
-### Go
-
-Use the generic workflow plus repository conventions unless a dedicated Go skill exists.
-
-Common signals:
-
-- `go.mod`, `go.sum`, `go.work`
-- `*_test.go`
-- `golangci-lint` configuration
-
-Prefer `go test ./...` only when the module is small or the change is cross-cutting; otherwise run package-scoped tests first.
-
-### Rust
-
-Use the generic workflow plus repository conventions unless a dedicated Rust skill exists.
-
-Common signals:
-
-- `Cargo.toml`, `Cargo.lock`
-- `src/lib.rs`, `src/main.rs`, `tests/`
-- `rust-toolchain.toml`, `rustfmt.toml`, `clippy.toml`
-
-Prefer package-scoped `cargo test` or targeted tests before workspace-wide checks.
-
 ## Mixed-language repositories
 
 For monorepos and mixed modules:
 
 1. Identify the file or module that owns the requested behavior.
 2. Read local instructions closest to that path.
-3. Use the language profile for the changed files.
+3. Use the available language profile for the changed files when one exists.
 4. Run checks scoped to that module first.
 5. Run broader checks only when shared contracts or generated artifacts are affected.
 
