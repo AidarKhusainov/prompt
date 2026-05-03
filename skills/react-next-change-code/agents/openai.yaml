@@ -1,4 +1,4 @@
 interface:
   display_name: "React and Next.js Change Code"
   short_description: "Implement, review, and test React/Next.js repo changes"
-  default_prompt: "Use react-next-change-code to implement, fix, refactor, review, or test this React or Next.js task safely in the current repository."
+  default_prompt: "Use react-next-change-code for React/Next-specific repository work. Do not use for generic JS/TS tooling, backend Node workers, or non-React JSX runtimes unless changed behavior crosses React/Next boundaries."
