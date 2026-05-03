@@ -8,7 +8,7 @@
 - `skills/change-code/` — входной навык для изменений в коде: определяет стек проекта и выбирает доступный workflow или reference-профиль для Java Maven/Gradle, React/Next.js, JS/TS, Bash/shell и смешанных репозиториев в рамках этих профилей.
 - `skills/create-agents-md/` — навык для подготовки `AGENTS.md` с правилами работы агента в проекте.
 - `skills/java-change-code/` — специализированный навык для внесения изменений в Java-код в существующих Maven/Gradle-репозиториях.
-- `skills/react-next-change-code/` — специализированный навык для внесения изменений в React и Next.js-код в существующих репозиториях, включая App Router, Server/Client Components, route handlers, server actions/functions, кеширование, metadata, UI-тесты и accessibility.
+- `skills/react-next-change-code/` — специализированный навык для внесения изменений в React и Next.js-код в существующих репозиториях, включая UI, components, hooks, App Router, Pages Router, Server/Client Components, route handlers, Server Functions, Server Actions, кеширование, metadata, UI-тесты и accessibility.
 
 ## Структура навыка
 
