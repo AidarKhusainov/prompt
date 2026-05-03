@@ -1,0 +1,4 @@
+interface:
+  display_name: "JavaScript and TypeScript Change Code"
+  short_description: "Implement, review, and test generic JS/TS repo changes"
+  default_prompt: "Use js-ts-change-code for generic JavaScript/TypeScript, Node.js, package tooling, shared utilities, CLIs, backend JS/TS, and JS/TS tests. Prefer narrower framework skills for React, Next.js, Vue, Nuxt, or other framework-specific behavior."
