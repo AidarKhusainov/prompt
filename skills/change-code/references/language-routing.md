@@ -28,7 +28,7 @@ Do not route Kotlin-only modules to `java-change-code` unless the task also chan
 
 ### JavaScript and TypeScript
 
-Use the generic workflow plus repository conventions for JS/TS unless a dedicated JS/TS skill exists.
+Read `references/js-ts-quality-rules.md` for JS/TS changes.
 
 Common signals:
 
@@ -45,7 +45,7 @@ Pick the package manager from the lockfile when one is present. Prefer package s
 
 ### Bash and shell scripts
 
-Use the generic workflow plus shell safety rules from `code-quality-rules.md` unless a dedicated shell skill exists.
+Read `references/bash-quality-rules.md` for shell script, Makefile shell, and CI shell-step changes.
 
 Common signals:
 
