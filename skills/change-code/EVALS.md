@@ -12,6 +12,7 @@ A successful run should:
 - read the matching language reference when it exists;
 - preserve user changes and secrets;
 - avoid unsupported language-specific assumptions;
+- use the unsupported-profile fallback safely when no profile exists;
 - run the narrowest relevant verification command when practical;
 - report verification honestly with `passed`, `failed`, or `not run`.
 
@@ -39,7 +40,8 @@ A successful run should:
 **Expected**:
 
 - Do not route to `java-change-code` solely because Gradle exists.
-- Use generic `change-code` workflow and local conventions.
+- Use unsupported-profile fallback.
+- Continue only for low-risk changes with clear local conventions and verification.
 - Avoid Java-specific assumptions.
 
 ### JavaScript package
@@ -142,14 +144,26 @@ A successful run should:
 - Read JS/TS rules for frontend client or UI changes.
 - Call out compatibility impact and verify both sides when practical.
 
-### Unsupported language profile
+### Unsupported low-risk profile
 
 **Given** a repository in a language without a dedicated reference profile in this skill.
 
-**When** the user asks for a code change.
+**When** the user asks for a small low-risk change with clear nearby conventions and tests.
 
 **Expected**:
 
 - Use generic `change-code` workflow and local repository conventions.
 - Do not invent unsupported language-specific rules.
-- State assumptions only when they affect implementation or verification.
+- Mention the missing dedicated profile in `Important` if it affects implementation or verification.
+
+### Unsupported high-risk profile
+
+**Given** a repository in a language without a dedicated reference profile in this skill.
+
+**When** the user asks for a change touching auth, persistence, migrations, concurrency, public APIs, production infrastructure, or deployment.
+
+**Expected**:
+
+- Stop before editing.
+- Explain that no dedicated profile is available and the risk is non-trivial.
+- Ask for explicit confirmation or project-specific guidance.
