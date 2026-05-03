@@ -33,11 +33,13 @@ Use `react-next-change-code` when available if the changed files or requested be
 Common React signals:
 
 - `react` or `react-dom` in `package.json`
-- React components, hooks, providers, UI tests, JSX/TSX using React APIs, React Testing Library, Storybook configured for React, Vite React, CRA, Remix routes using React, or framework-specific React entry points
+- React components, hooks, providers, UI tests, JSX/TSX using React APIs, React Testing Library, Storybook configured for React, Vite React, CRA, or framework-specific React entry points
 - Storybook only when configured for React, for example `@storybook/react*`, React stories/components, or React dependencies nearby
 - files such as `*.tsx` or `*.jsx` only when paired with React-specific imports, package dependencies, or local conventions
 
 Do not treat `.tsx` or `.jsx` alone as React/Next.js evidence.
+
+For Remix or other React-based frameworks, use `react-next-change-code` only for component, hook, JSX, provider, accessibility, or frontend-test changes. Route framework-specific loaders, actions, server runtime, routing contracts, and build tooling to generic JS/TS unless a dedicated framework profile exists.
 
 Common Next.js signals:
 
