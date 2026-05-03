@@ -99,7 +99,25 @@ Known routing defaults:
 - Repository instruction generation: use `create-agents-md` when the user asks to create, update, audit, or align `AGENTS.md`.
 - Mixed-language repositories: choose the available profile for the files that actually change, not the dominant language of the repository.
 
-When no specific skill or profile exists, continue with this skill and adapt to nearby conventions without adding unsupported language-specific assumptions.
+When no specific skill or profile exists, follow the unsupported profile fallback below.
+
+## Unsupported profile fallback
+
+If the detected stack has no dedicated skill or reference profile, do not invent language-specific rules.
+
+Continue with the generic workflow only when:
+
+- the change is small or low-risk;
+- local repository conventions are clear;
+- a narrow verification path exists, or the limitation can be reported honestly.
+
+Stop before editing and explain the limitation when:
+
+- the change touches security, auth, persistence, migrations, concurrency, public APIs, production infrastructure, or deployment;
+- the implementation depends on language or framework semantics not covered by this skill;
+- no reliable verification path exists and the risk is non-trivial.
+
+When using the fallback, mention the missing dedicated profile in `Important` if it affected implementation or verification.
 
 ## Workspace safety
 
