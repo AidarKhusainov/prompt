@@ -27,12 +27,15 @@ Follow these rules unless the user explicitly asks for something different or th
 ## Hooks
 
 - Follow the Rules of Hooks: call hooks only at the top level of React function components or custom hooks.
-- Do not call hooks conditionally, in loops, after early returns, in callbacks, in async functions, or at module scope. The React `use` API is an exception only when supported by the installed version and framework.
+- Do not call hooks conditionally, in loops, after early returns, in callbacks, in async functions, or at module scope.
+- The React `use` API is an exception only when supported by the installed version and framework: it may be used conditionally or in loops, but it must still be used in a component or custom hook context and must not be wrapped in `try`/`catch`.
 - Keep custom hooks named with the `use` prefix and make their dependencies explicit.
 - Do not pass hooks as values, dynamically wrap hooks, or create higher-order hooks that obscure hook calls.
 - Keep dependency arrays correct. Do not silence `exhaustive-deps` by default; restructure code or stabilize values when needed.
 - Prefer event handlers for user-triggered side effects and effects for synchronization with external systems.
 - Do not use `useEffect` for derived state that can be calculated during render.
+- Do not use `useEffectEvent` to avoid listing real dependencies. Use it only for logic that is genuinely triggered from Effects and should read latest values without re-synchronizing the Effect.
+- Do not pass Effect Events to other components or hooks.
 - Clean up subscriptions, timers, observers, event listeners, and async work in effects.
 - Avoid broad memoization. Use `useMemo`, `useCallback`, and `memo` only when they solve a measured or likely rendering problem, preserve referential stability required by children/hooks, or match local style.
 
@@ -54,6 +57,11 @@ Follow these rules unless the user explicitly asks for something different or th
 - Keep validation close to the boundary that owns the data. Validate again on the server for untrusted input.
 - For newer React forms/actions, prefer `useActionState`, Action props, and `useOptimistic` only when the installed stack supports them and the project uses or accepts that pattern.
 - For older React stacks, preserve the existing mutation pattern such as event handlers, React Query/TanStack Query, SWR, Redux, tRPC, or form libraries.
+
+## Server-oriented React APIs
+
+- Treat `cacheSignal` as React Server Components-oriented. Do not use it in Client Components or general browser code as a universal client-side abort API.
+- When server-oriented React APIs are available, use them only in the runtime and framework context documented for the installed versions.
 
 ## Accessibility
 
