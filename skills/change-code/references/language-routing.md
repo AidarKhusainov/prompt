@@ -41,7 +41,7 @@ Common signals:
 - `eslint.config.*`, `.eslintrc*`, `prettier.config.*`, `.prettierrc*`
 - `src/**/*.ts`, `src/**/*.tsx`, `src/**/*.js`, `src/**/*.jsx`
 
-Pick the package manager from the lockfile when one is present. Prefer package scripts over invented commands.
+Choose the package manager from consistent repository evidence: `packageManager`, Corepack usage, lockfiles, workspace config, README, CI, and package scripts. If signals conflict, inspect nearby module docs before choosing commands.
 
 ### Bash and shell scripts
 
