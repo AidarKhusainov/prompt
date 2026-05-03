@@ -1,0 +1,4 @@
+interface:
+  display_name: "React and Next.js Change Code"
+  short_description: "Implement safe React/Next.js repo changes"
+  default_prompt: "Use react-next-change-code to implement this React or Next.js code change safely in the current repository."
