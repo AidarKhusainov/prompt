@@ -88,7 +88,7 @@ Before using version-sensitive APIs or patterns, inspect package manifests and c
 - App Router (`app/` or `src/app/`) versus Pages Router (`pages/` or `src/pages/`);
 - Next.js config, route segment config, `middleware.ts`/`proxy.ts`, `instrumentation.*`, and deployment/runtime hints;
 - React Compiler, Strict Mode, Server Components, Server Functions, Server Actions, typed routes, Turbopack, or other experimental/stable feature flags;
-- React 19.2+ features such as `<Activity />`, `useEffectEvent`, `cacheSignal`, React Performance Tracks, and `eslint-plugin-react-hooks` v6 only when installed and locally adopted.
+- newer React features such as `<Activity />`, `useEffectEvent`, `cacheSignal`, React Performance Tracks, and newer `eslint-plugin-react-hooks` behavior only when installed and locally adopted.
 
 Do not upgrade React, Next.js, TypeScript, package managers, lockfiles, lint configs, bundlers, or test tools unless the task explicitly requires it.
 
