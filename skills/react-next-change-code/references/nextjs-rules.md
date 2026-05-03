@@ -38,7 +38,7 @@ Prefer the closest package/module-level config and scripts in monorepos.
 - Once a module is marked `'use client'`, its imports are part of the client module graph. Do not import server-only code into it.
 - Do not pass non-serializable props from Server Components to Client Components.
 - Do not import database clients, filesystem access, private environment variables, auth server helpers, or server-only modules into Client Components.
-- Use `server-only` and `client-only` package patterns when the repository already uses them or when adding a small boundary guard is appropriate.
+- Use `server-only` / `client-only` only when the package is already available in the project, or when adding that dependency is explicitly allowed by the task and package-manager policy.
 - Wrap third-party browser-only components in small Client Components instead of marking a whole route or layout as client.
 - Do not add hooks such as `useState`, `useEffect`, `useReducer`, `useRef`, `useSearchParams`, or client router hooks to Server Components.
 - Avoid hydration mismatches from browser-only values, random IDs, dates, time zones, locale formatting, media queries, and storage reads during server render.
@@ -59,8 +59,8 @@ Prefer the closest package/module-level config and scripts in monorepos.
 - Treat caching and rendering mode as public behavior. Do not change them casually.
 - Before editing, identify whether the route is static, dynamic, partially prerendered, cache-component based, or legacy cache-model based.
 - Preserve existing `fetch` cache options, `next.revalidate`, `next.tags`, route segment config, `dynamic`, `revalidate`, `fetchCache`, `runtime`, and `preferredRegion` unless the task requires a change.
-- Do not use Cache Components APIs unless they are enabled in Next.js config or the repository already has a local pattern for them.
-- In projects using Cache Components, use `use cache`, `cacheTag`, `cacheLife`, `revalidateTag`, `updateTag`, and `revalidatePath` only when enabled and consistent with local patterns.
+- `use cache`, `cacheTag`, and `cacheLife` require Cache Components support or a clear local pattern. Do not use them unless they are enabled in Next.js config or already used in the repository.
+- `revalidateTag` and `revalidatePath` may also exist in the previous cache model. Choose the signature and behavior supported by the installed Next.js version and local conventions.
 - Do not add deprecated single-argument `revalidateTag(tag)` calls in projects whose installed Next.js version expects a cache-life profile argument.
 - Prefer `revalidateTag(tag, "max")` for stale-while-revalidate behavior when supported.
 - Use `updateTag(tag)` only in Server Actions when the next request must block for fresh data.
