@@ -14,6 +14,7 @@ Follow these rules unless the user explicitly asks for something different or th
 - Account for newer Cache Components and proxy conventions only when the installed Next.js version supports them and the repository has adopted those patterns.
 - Do not rename `middleware.ts` to `proxy.ts`, enable Cache Components, add PPR, change route segment config, or alter runtime target unless the task explicitly requires it.
 - In projects that already use `proxy.ts`, follow the runtime documented for the installed Next.js version. Do not assume Edge runtime behavior for proxy code.
+- If existing middleware relies on Edge runtime behavior, do not migrate it to `proxy.ts` unless the installed Next.js version and deployment target explicitly support the required runtime behavior.
 - Do not assume `next lint` exists. Prefer the repository's configured ESLint/package script because newer Next.js versions use ESLint directly.
 
 ## Project and router detection
@@ -60,9 +61,10 @@ Prefer the closest package/module-level config and scripts in monorepos.
 - Preserve existing `fetch` cache options, `next.revalidate`, `next.tags`, route segment config, `dynamic`, `revalidate`, `fetchCache`, `runtime`, and `preferredRegion` unless the task requires a change.
 - Do not use Cache Components APIs unless they are enabled in Next.js config or the repository already has a local pattern for them.
 - In projects using Cache Components, use `use cache`, `cacheTag`, `cacheLife`, `revalidateTag`, `updateTag`, and `revalidatePath` only when enabled and consistent with local patterns.
-- Do not add deprecated single-argument `revalidateTag(tag)` calls in projects whose installed Next.js version expects a cache-life profile argument. Prefer `revalidateTag(tag, "max")` for stale-while-revalidate behavior when supported, or `updateTag(tag)` only in Server Actions when read-your-own-writes semantics are required.
-- Use `updateTag` for read-your-own-writes only in Server Actions where supported.
-- Use `revalidateTag` for tag-based stale-while-revalidate invalidation when supported and appropriate.
+- Do not add deprecated single-argument `revalidateTag(tag)` calls in projects whose installed Next.js version expects a cache-life profile argument.
+- Prefer `revalidateTag(tag, "max")` for stale-while-revalidate behavior when supported.
+- Use `updateTag(tag)` only in Server Actions when the next request must block for fresh data.
+- Never use `updateTag` in Route Handlers; use `revalidateTag` from Route Handlers when tag invalidation is needed and supported.
 - Prefer tag-based revalidation over path-based revalidation when the cache ownership is clear.
 - Avoid over-invalidating broad paths or root layouts unless the task requires it.
 - Do not use deprecated or legacy cache behavior when the repository has already migrated to a newer model.
@@ -121,6 +123,7 @@ Prefer the closest package/module-level config and scripts in monorepos.
 - Treat middleware/proxy as security- and routing-sensitive.
 - Preserve matcher patterns, auth checks, redirects, rewrites, headers, cookies, locale handling, and URL normalization unless explicitly requested.
 - For projects that already use `proxy.ts`, follow proxy naming and runtime constraints for the installed Next.js version.
+- If existing middleware relies on Edge runtime behavior, keep it as middleware unless the installed Next.js version and deployment target explicitly support the same behavior in proxy.
 - Do not rename middleware/proxy files or change skip flags just for style.
 - Do not add heavy work, database calls, or unsupported runtime APIs to middleware/proxy.
 
