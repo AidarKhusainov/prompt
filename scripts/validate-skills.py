@@ -6,6 +6,7 @@ Checks are intentionally lightweight and dependency-free by default:
 - skill frontmatter presence and required keys;
 - agent metadata YAML parse when PyYAML is available, with a strict fallback for this repo's simple YAML shape;
 - referenced `references/*.md` files exist in the owning skill bundle;
+- backticked short `*-rules.md` references resolve to files in the owning skill bundle's `references/` directory;
 - known stale reference filenames are not present;
 - README ordered lists use increasing numbers.
 """
@@ -37,6 +38,17 @@ def iter_text_files() -> list[Path]:
     return sorted(set(paths))
 
 
+def iter_skill_doc_files() -> list[Path]:
+    paths: list[Path] = []
+    for base in [ROOT / "README.md", ROOT / "skills", ROOT / ".github"]:
+        if base.is_file():
+            paths.append(base)
+        elif base.exists():
+            for pattern in TEXT_GLOBS:
+                paths.extend(base.rglob(pattern))
+    return sorted(set(paths))
+
+
 def rel(path: Path) -> str:
     return str(path.relative_to(ROOT))
 
@@ -49,6 +61,8 @@ def is_bad_hidden_char(ch: str) -> bool:
     codepoint = ord(ch)
     if ch in CONTROL_ALLOWED:
         return False
+    if unicodedata.category(ch) == "Cf":
+        return True
     if codepoint == 0x7F:
         return True
     if 0x00 <= codepoint <= 0x1F:
@@ -74,7 +88,7 @@ def check_hidden_unicode(errors: list[str]) -> None:
 
 
 def check_forbidden_text(errors: list[str]) -> None:
-    for path in iter_text_files():
+    for path in iter_skill_doc_files():
         text = path.read_text(encoding="utf-8")
         for needle, reason in FORBIDDEN_TEXT.items():
             if needle in text:
@@ -175,7 +189,8 @@ def skill_root_for(path: Path) -> Path | None:
 
 def check_reference_links(errors: list[str]) -> None:
     reference_pattern = re.compile(r"`?(references/[A-Za-z0-9._/-]+\.md)`?")
-    for path in iter_text_files():
+    short_rules_pattern = re.compile(r"`([A-Za-z0-9._-]+-rules\.md)`")
+    for path in iter_skill_doc_files():
         root = skill_root_for(path)
         if root is None:
             continue
@@ -184,6 +199,13 @@ def check_reference_links(errors: list[str]) -> None:
             target = root / match.group(1)
             if not target.is_file():
                 fail(errors, f"{rel(path)}: missing referenced file {match.group(1)!r}")
+        for match in short_rules_pattern.finditer(text):
+            filename = match.group(1)
+            if filename.startswith("references/"):
+                continue
+            target = root / "references" / filename
+            if not target.is_file():
+                fail(errors, f"{rel(path)}: missing short rules reference {filename!r}")
 
 
 def check_readme_numbering(errors: list[str]) -> None:
