@@ -28,12 +28,13 @@ Do not route Kotlin-only modules to `java-change-code` unless the task also chan
 
 ### React and Next.js
 
-Use `react-next-change-code` when available if the changed files or requested behavior involve React or Next.js UI, components, hooks, providers, forms, routes, layouts, Server Components, Client Components, server/client boundaries, route handlers, Server Functions, Server Actions, metadata, caching/revalidation, middleware/proxy, images/fonts, accessibility, or frontend tests.
+Use `react-next-change-code` when available if the changed files or requested behavior involve React or Next.js UI, components, hooks, providers, forms, routes, layouts, Server Components, Client Components, server/client boundaries, route handlers, Server Functions, Server Actions, metadata, caching/revalidation, middleware/proxy, images/fonts, accessibility, or React/Next frontend tests.
 
 Common React signals:
 
 - `react` or `react-dom` in `package.json`
-- React components, hooks, providers, stories, UI tests, JSX/TSX using React APIs, React Testing Library, Storybook, Vite React, CRA, Remix routes using React, or framework-specific React entry points
+- React components, hooks, providers, UI tests, JSX/TSX using React APIs, React Testing Library, Storybook configured for React, Vite React, CRA, Remix routes using React, or framework-specific React entry points
+- Storybook only when configured for React, for example `@storybook/react*`, React stories/components, or React dependencies nearby
 - files such as `*.tsx` or `*.jsx` only when paired with React-specific imports, package dependencies, or local conventions
 
 Common Next.js signals:
