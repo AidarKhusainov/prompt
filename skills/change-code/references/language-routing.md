@@ -37,13 +37,15 @@ Common React signals:
 - Storybook only when configured for React, for example `@storybook/react*`, React stories/components, or React dependencies nearby
 - files such as `*.tsx` or `*.jsx` only when paired with React-specific imports, package dependencies, or local conventions
 
+Do not treat `.tsx` or `.jsx` alone as React/Next.js evidence.
+
 Common Next.js signals:
 
 - `next` in `package.json`
 - `next.config.*`
-- App Router files: `app/`, `src/app/`, `layout.*`, `page.*`, `loading.*`, `error.*`, `not-found.*`, `route.*`
+- App Router files under `app/` or `src/app/`: `layout.*`, `page.*`, `loading.*`, `error.*`, `not-found.*`, `route.*`
 - Pages Router files: `pages/`, `src/pages/`, `_app.*`, `_document.*`, `getServerSideProps`, `getStaticProps`, API routes
-- `middleware.*` or `proxy.*`
+- `middleware.*` or `proxy.*` only when located at the Next.js app root or `src` root and paired with `next` in `package.json`, `next/server` imports, or nearby Next.js route structure
 
 For React/Next.js tasks, also read `references/js-ts-quality-rules.md` when the change touches general JavaScript/TypeScript concerns such as package scripts, type declarations, async logic, Node/server utilities, package tooling, build scripts, or shared JS/TS code.
 
