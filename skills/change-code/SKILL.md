@@ -136,12 +136,14 @@ Before editing, inspect workspace state when possible:
 
 Before editing, inspect relevant:
 
-- Local agent/project guidance: `AGENTS.md`, `CLAUDE.md`, `.cursor/rules`, `.github/copilot-instructions.md`, README, CONTRIBUTING, ADRs, module docs.
+- Local agent/project guidance: nearest `AGENTS.md`, `CLAUDE.md`, `.cursor/rules`, `.github/copilot-instructions.md`, README, CONTRIBUTING, ADRs, and module docs for the files being changed.
 - Build and package manifests for supported profiles: for example `package.json`, JS package-manager lockfiles, `pom.xml`, `build.gradle`, `Makefile`, shell scripts, CI workflows, and toolchain files.
 - Existing package/module structure and naming conventions.
 - Nearby source files and tests.
 - Existing test style, fixtures, mocks/fakes, and integration-test boundaries.
 - Formatting and static analysis tools configured by the repository.
+
+For monorepos or nested projects, prefer the closest applicable local instructions and module manifests over root-level assumptions when they differ.
 
 Prefer targeted search over reading many unrelated files. Start from failing tests, stack traces, package names, command names, symbols, and files mentioned by the user.
 
