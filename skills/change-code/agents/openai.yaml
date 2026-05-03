@@ -1,0 +1,4 @@
+interface:
+  display_name: "Change Code"
+  short_description: "Route and implement safe repo code changes"
+  default_prompt: "Use $change-code to route and implement this code change safely in the current repository."
