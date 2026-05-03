@@ -1,6 +1,6 @@
 ---
 name: change-code
-description: Use this skill when the user asks to implement, fix, refactor, or test code in an existing repository and the task is not better covered by a more specific language or framework skill. Detect the project language, build system, test framework, and local conventions before editing. Route Java Maven/Gradle work to java-change-code when that skill is available.
+description: Use this skill when the user asks to implement, fix, refactor, or test code in an existing repository and the task is not better covered by a more specific language or framework skill. Detect the project language, build system, test framework, and local conventions before editing. Prefer the Java Maven/Gradle workflow from java-change-code when that skill is available.
 ---
 
 # Change Code Router Skill
@@ -10,6 +10,8 @@ description: Use this skill when the user asks to implement, fix, refactor, or t
 Implement focused code changes in an existing repository across supported profiles: Java Maven/Gradle modules, JavaScript/TypeScript projects, Bash/shell scripts, configuration-adjacent code, and mixed-language repositories involving those profiles.
 
 Act as a senior engineer for the detected stack. Prefer the narrowest applicable language-specific skill or reference rules. When no specific profile exists, use this skill's generic workflow and the repository's own conventions without inventing unsupported language rules.
+
+This skill uses routing as an instruction pattern: detect the stack, choose the best available workflow or reference profile, and follow it. Do not assume the platform can automatically activate another skill at runtime. If another skill cannot be explicitly activated, use this skill for stack detection and then apply the matching workflow or reference rules by instruction.
 
 ## Instruction priority
 
@@ -22,6 +24,8 @@ Follow these instructions in this priority order:
 5. Nearby code and tests.
 6. Remaining rules in this skill.
 7. `references/code-quality-rules.md` and `references/language-routing.md` when applicable.
+
+If routing to a more specific skill such as `java-change-code`, follow that skill's instruction priority, non-overridable safety rules, workflow, verification rules, and final-response rules for the scoped task.
 
 If instructions conflict, follow the more specific and safer instruction. Do not violate production safety, security, public contracts, or user-owned work.
 
@@ -42,7 +46,7 @@ Work end-to-end unless a permission gate is hit.
 1. Understand the requested behavior.
 2. Inspect the repository before editing.
 3. Detect the relevant language, runtime, package manager, build tool, test framework, and formatter/linter.
-4. Route to a more specific skill or language profile when available.
+4. Read the matching language reference when one exists, or prefer the matching specific skill when one is available.
 5. Inspect relevant local instructions, code, tests, build files, configuration, and CI hints.
 6. Check workspace state before editing.
 7. Make the smallest cohesive change.
@@ -56,9 +60,10 @@ For trivial, localized changes, use a fast path:
 
 1. Check workspace state.
 2. Inspect only the directly relevant files.
-3. Make the minimal change.
-4. Run the narrowest relevant check when practical.
-5. Report briefly.
+3. Read the matching language reference when one exists, unless the change is purely mechanical and unrelated to language behavior.
+4. Make the minimal change.
+5. Run the narrowest relevant check when practical.
+6. Report briefly.
 
 Do not stop after planning unless the user asked for plan-only mode or the change is gated, ambiguous, destructive, or unsafe.
 
@@ -70,7 +75,15 @@ Ask a clarifying question only when the missing detail would materially change t
 
 ## Routing rules
 
-Before editing, read `references/language-routing.md` when the stack is not obvious or the repository is mixed-language.
+Routing means selecting the best available workflow or reference profile for the task. It is not a guarantee that the platform will automatically load or execute another skill.
+
+Before editing, read `references/language-routing.md` when the stack is not obvious, the repository is mixed-language, or the requested change could affect several modules.
+
+After detecting the stack, read or apply the matching profile when it exists:
+
+- Java Maven/Gradle repository or module: prefer `java-change-code` when available and follow that skill's workflow. If it cannot be activated as a separate skill, apply its Java Maven/Gradle workflow by instruction.
+- JavaScript or TypeScript project: read `references/js-ts-quality-rules.md`.
+- Bash, POSIX `sh`, Zsh, Makefile shell, or CI shell step: read `references/bash-quality-rules.md`.
 
 Prefer a more specific skill over this generic workflow when all of these are true:
 
@@ -80,7 +93,7 @@ Prefer a more specific skill over this generic workflow when all of these are tr
 
 Known routing defaults:
 
-- Java Maven/Gradle repository or module: use `java-change-code` when available.
+- Java Maven/Gradle repository or module: prefer `java-change-code` when available.
 - JavaScript or TypeScript project: read `references/js-ts-quality-rules.md`.
 - Bash or shell script: read `references/bash-quality-rules.md`.
 - Repository instruction generation: use `create-agents-md` when the user asks to create, update, audit, or align `AGENTS.md`.
