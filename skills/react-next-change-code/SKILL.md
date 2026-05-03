@@ -1,6 +1,6 @@
 ---
 name: react-next-change-code
-description: Use this skill when the user asks to implement, fix, refactor, review, analyze, explain, plan, or test React or Next.js code in an existing repository, including React applications, Next.js App Router or Pages Router applications, React component libraries, frontend tests, route handlers, Server Functions, Server Actions, metadata, caching, forms, accessibility, or UI performance. Do not trigger for standalone snippets, general explanations without repository context, non-React frontend frameworks, or repositories/modules where the changed files and requested behavior are unrelated to React or Next.js.
+description: Use this skill for repository-based React or Next.js implementation, refactor, testing, review, or analysis when the changed files or requested behavior involve React/Next.js UI, routing, server/client boundaries, route handlers, caching, metadata, accessibility, or frontend tests.
 ---
 
 # React and Next.js Change Code Skill
@@ -40,8 +40,11 @@ Choose the task mode from the user's request:
 
 - Change mode: implement, fix, refactor, migrate, add tests, update tests, or otherwise edit files.
 - Review/analyze mode: review, audit, explain, analyze, estimate, plan, or recommend without requested code changes.
+- Mixed mode: requests that combine review, analysis, explanation, or planning with implementation or fixes.
 
 In review/analyze mode, do not edit files. Inspect relevant repository files and report findings, risks, recommendations, and verification limits.
+
+If the request combines review/analyze and implementation, first inspect and summarize the intended change briefly, then proceed in change mode unless the user explicitly asked for approval before editing.
 
 In change mode, work end-to-end unless a permission gate is hit.
 
@@ -298,14 +301,14 @@ If the task cannot be completed:
 
 Keep it short.
 
-For change mode, use these English section labels exactly:
+For change mode and mixed mode with edits, use these English section labels exactly:
 
 - `Done`
 - `Changed`
 - `Verification`
 - `Important`
 
-For review/analyze mode, use these English section labels exactly:
+For review/analyze mode without edits, use these English section labels exactly:
 
 - `Findings`
 - `Risks`
