@@ -13,7 +13,7 @@ Follow these rules unless the user explicitly asks for something different or th
 - Use the term Server Functions for general server-executed functions. Use Server Actions for mutation/action flows, especially forms.
 - Account for newer Cache Components and proxy conventions only when the installed Next.js version supports them and the repository has adopted those patterns.
 - Do not rename `middleware.ts` to `proxy.ts`, enable Cache Components, add PPR, change route segment config, or alter runtime target unless the task explicitly requires it.
-- In projects that already use `proxy.ts`, follow the runtime documented for the installed Next.js version. Do not assume Edge runtime behavior for proxy code.
+- For Next.js 16+ `proxy.ts`, default runtime is Node.js and `runtime` config is not available in Proxy files. For older middleware files, inspect the installed Next.js version before assuming Edge or Node runtime behavior.
 - If existing middleware relies on Edge runtime behavior, do not migrate it to `proxy.ts` unless the installed Next.js version and deployment target explicitly support the required runtime behavior.
 - Do not assume `next lint` exists. Prefer the repository's configured ESLint/package script because newer Next.js versions use ESLint directly.
 
@@ -123,6 +123,7 @@ Prefer the closest package/module-level config and scripts in monorepos.
 - Treat middleware/proxy as security- and routing-sensitive.
 - Preserve matcher patterns, auth checks, redirects, rewrites, headers, cookies, locale handling, and URL normalization unless explicitly requested.
 - For projects that already use `proxy.ts`, follow proxy naming and runtime constraints for the installed Next.js version.
+- For Next.js 16+ `proxy.ts`, default runtime is Node.js and `runtime` config is not available in Proxy files. For older middleware files, inspect the installed Next.js version before assuming Edge or Node runtime behavior.
 - If existing middleware relies on Edge runtime behavior, keep it as middleware unless the installed Next.js version and deployment target explicitly support the same behavior in proxy.
 - Do not rename middleware/proxy files or change skip flags just for style.
 - Do not add heavy work, database calls, or unsupported runtime APIs to middleware/proxy.
