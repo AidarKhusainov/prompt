@@ -28,13 +28,13 @@ Do not route Kotlin-only modules to `java-change-code` unless the task also chan
 
 ### React and Next.js
 
-Use `react-next-change-code` when available if the relevant module contains React or Next.js code.
+Use `react-next-change-code` when available if the changed files or requested behavior involve React or Next.js UI, components, hooks, providers, forms, routes, layouts, Server Components, Client Components, server/client boundaries, route handlers, Server Functions, Server Actions, metadata, caching/revalidation, middleware/proxy, images/fonts, accessibility, or frontend tests.
 
 Common React signals:
 
 - `react` or `react-dom` in `package.json`
-- `src/**/*.tsx`, `src/**/*.jsx`, component directories, hooks, providers, stories, or UI tests
-- JSX/TSX components, React hooks, React Testing Library, Storybook, Vite React, CRA, Remix routes using React, or framework-specific React entry points
+- React components, hooks, providers, stories, UI tests, JSX/TSX using React APIs, React Testing Library, Storybook, Vite React, CRA, Remix routes using React, or framework-specific React entry points
+- files such as `*.tsx` or `*.jsx` only when paired with React-specific imports, package dependencies, or local conventions
 
 Common Next.js signals:
 
@@ -44,9 +44,11 @@ Common Next.js signals:
 - Pages Router files: `pages/`, `src/pages/`, `_app.*`, `_document.*`, `getServerSideProps`, `getStaticProps`, API routes
 - `middleware.*` or `proxy.*`
 
-For React/Next.js tasks, also read `references/js-ts-quality-rules.md` when the change touches general JavaScript/TypeScript concerns such as package scripts, type declarations, async logic, Node/server utilities, or shared JS/TS code.
+For React/Next.js tasks, also read `references/js-ts-quality-rules.md` when the change touches general JavaScript/TypeScript concerns such as package scripts, type declarations, async logic, Node/server utilities, package tooling, build scripts, or shared JS/TS code.
 
-Do not use React/Next.js rules for non-React frameworks such as Vue, Svelte, Angular, Astro-only, or plain Node.js unless the changed files actually contain React/Next.js code.
+Do not use React/Next.js rules only because a monorepo package contains React or Next.js somewhere. Route worker-only code, package scripts, config tooling, codegen, backend JS/TS, and shared non-UI utilities to the generic JS/TS profile unless the requested behavior crosses into React/Next.js.
+
+Do not use React/Next.js rules for non-React frameworks such as Vue, Svelte, Angular, Astro-only, Preact, Solid, MDX-only, or plain Node.js unless the changed files actually contain React/Next.js code or the repository explicitly treats that area as React/Next.js.
 
 ### JavaScript and TypeScript
 
@@ -61,7 +63,9 @@ Common signals:
 - `bun.lockb`, `bun.lock`
 - `tsconfig.json`, `jsconfig.json`
 - `eslint.config.*`, `.eslintrc*`, `prettier.config.*`, `.prettierrc*`
-- `src/**/*.ts`, `src/**/*.js`, config scripts, CLIs, backend JS/TS, or shared libraries
+- `src/**/*.ts`, `src/**/*.tsx`, `src/**/*.js`, `src/**/*.jsx`, config scripts, CLIs, backend JS/TS, or shared libraries
+
+If JSX/TSX is present without React or Next.js evidence, route to generic JS/TS first and follow the repository's local JSX runtime conventions.
 
 Choose the package manager from consistent repository evidence: `packageManager`, Corepack usage, lockfiles, workspace config, README, CI, and package scripts. If signals conflict, inspect nearby module docs before choosing commands.
 
@@ -84,7 +88,7 @@ For monorepos and mixed modules:
 
 1. Identify the file or module that owns the requested behavior.
 2. Read local instructions closest to that path.
-3. Use the available language/framework profile for the changed files when one exists.
+3. Use the available language/framework profile for the changed files and behavior when one exists.
 4. Run checks scoped to that module first.
 5. Run broader checks only when shared contracts or generated artifacts are affected.
 
@@ -92,6 +96,7 @@ Examples:
 
 - Java backend plus React frontend: route API implementation to Java; route UI changes to React/Next.js; route API contract changes through both sides if needed.
 - Next.js frontend plus Node worker: route app route/component/server-action changes to React/Next.js; route worker-only changes to JS/TS.
+- React package plus shared TypeScript utilities: route component or hook changes to React/Next.js; route utility-only changes to JS/TS unless the utility's contract is React-specific.
 - Shell script that invokes a Java service: route script-only fixes to shell; route service behavior changes to Java.
 - Generated client from OpenAPI: edit the OpenAPI source when appropriate, not generated output, and verify both generator and affected consumer when practical.
 
