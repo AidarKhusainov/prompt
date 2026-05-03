@@ -8,7 +8,7 @@ Follow these rules unless the user explicitly asks for something different or th
 
 Before editing, inspect the relevant module for:
 
-- package manager: `package-lock.json`, `npm-shrinkwrap.json`, `pnpm-lock.yaml`, `yarn.lock`, `bun.lock`/`bun.lockb`;
+- package manager: `packageManager` in `package.json`, Corepack usage, `package-lock.json`, `npm-shrinkwrap.json`, `pnpm-lock.yaml`, `yarn.lock`, `bun.lock`/`bun.lockb`;
 - workspace config: `pnpm-workspace.yaml`, Yarn workspaces, npm workspaces, Turborepo, Nx, Lerna;
 - runtime and module system: `engines`, `type: "module"`, `.mjs`, `.cjs`, `.mts`, `.cts`, bundler config;
 - TypeScript config: `tsconfig.json`, inherited configs, project references;
@@ -20,7 +20,9 @@ Use package scripts and documented commands before inventing commands.
 
 ## Package manager and dependencies
 
-- Use the package manager implied by the lockfile.
+- Check `packageManager` in `package.json` and Corepack usage when present.
+- Use the package manager indicated by consistent repository evidence: package manager field, lockfile, workspace config, README, CI, and package scripts.
+- If package manager signals conflict, inspect README, CI, package scripts, and nearby module docs before choosing commands.
 - Do not mix lockfiles or package managers.
 - Do not edit lockfiles manually.
 - Do not add dependencies unless clearly necessary and permitted.
