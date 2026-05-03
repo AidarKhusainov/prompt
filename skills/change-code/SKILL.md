@@ -7,9 +7,9 @@ description: Use this skill when the user asks to implement, fix, refactor, or t
 
 ## Purpose
 
-Implement focused code changes in an existing repository across languages: features, bug fixes, small refactors, test updates, scripts, configuration-adjacent code, and mixed-language modules.
+Implement focused code changes in an existing repository across supported profiles: Java Maven/Gradle modules, JavaScript/TypeScript projects, Bash/shell scripts, configuration-adjacent code, and mixed-language repositories involving those profiles.
 
-Act as a senior engineer for the detected stack. Prefer the narrowest applicable language-specific skill or reference rules. When no specific profile exists, use this skill's generic workflow and the repository's own conventions.
+Act as a senior engineer for the detected stack. Prefer the narrowest applicable language-specific skill or reference rules. When no specific profile exists, use this skill's generic workflow and the repository's own conventions without inventing unsupported language rules.
 
 ## Instruction priority
 
@@ -81,10 +81,12 @@ Prefer a more specific skill over this generic workflow when all of these are tr
 Known routing defaults:
 
 - Java Maven/Gradle repository or module: use `java-change-code` when available.
+- JavaScript or TypeScript project: read `references/js-ts-quality-rules.md`.
+- Bash or shell script: read `references/bash-quality-rules.md`.
 - Repository instruction generation: use `create-agents-md` when the user asks to create, update, audit, or align `AGENTS.md`.
-- Mixed-language repositories: choose the profile for the files that actually change, not the dominant language of the repository.
+- Mixed-language repositories: choose the available profile for the files that actually change, not the dominant language of the repository.
 
-When no specific skill exists, continue with this skill and adapt to nearby conventions.
+When no specific skill or profile exists, continue with this skill and adapt to nearby conventions without adding unsupported language-specific assumptions.
 
 ## Workspace safety
 
@@ -104,7 +106,7 @@ Before editing, inspect workspace state when possible:
 Before editing, inspect relevant:
 
 - Local agent/project guidance: `AGENTS.md`, `CLAUDE.md`, `.cursor/rules`, `.github/copilot-instructions.md`, README, CONTRIBUTING, ADRs, module docs.
-- Build and package manifests: for example `package.json`, `pnpm-lock.yaml`, `Cargo.toml`, `pyproject.toml`, `go.mod`, `pom.xml`, `build.gradle`, `Makefile`, CI workflows, and toolchain files.
+- Build and package manifests for supported profiles: for example `package.json`, JS package-manager lockfiles, `pom.xml`, `build.gradle`, `Makefile`, shell scripts, CI workflows, and toolchain files.
 - Existing package/module structure and naming conventions.
 - Nearby source files and tests.
 - Existing test style, fixtures, mocks/fakes, and integration-test boundaries.
@@ -118,7 +120,7 @@ Use repository-specific commands from local docs, Makefiles, scripts, package ma
 
 Prefer fast file discovery, symbol search, and targeted reads over broad file reads.
 
-Avoid reading large generated files, build outputs, dependency caches, vendored directories, `.git`, `node_modules`, `target`, `build`, `dist`, `.gradle`, virtualenvs, logs, and binary assets unless directly relevant.
+Avoid reading large generated files, build outputs, dependency caches, vendored directories, `.git`, `node_modules`, `target`, `build`, `dist`, `.gradle`, logs, and binary assets unless directly relevant.
 
 When command output is large, inspect the failing summary, first relevant stack trace, and test report files instead of pasting or reading everything.
 
@@ -199,7 +201,7 @@ Use local wrappers and package-manager-specific commands when present:
 
 - `./mvnw` over `mvn`;
 - `./gradlew` over `gradle`;
-- package manager implied by lockfile: `pnpm`, `yarn`, `npm`, or `bun`;
+- package manager implied by JS lockfile: `pnpm`, `yarn`, `npm`, or `bun`;
 - project scripts from `Makefile`, `justfile`, `package.json`, CI workflows, or repo docs.
 
 Normal dependency resolution for the relevant module is allowed unless the repository guidance, command output, or task context suggests unusually large downloads, external paid services, credentials, or long-running infrastructure.
