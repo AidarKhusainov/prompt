@@ -1,6 +1,6 @@
 ---
 name: react-next-change-code
-description: Use this skill for repository-based React or Next.js implementation, refactor, testing, review, or analysis when the changed files or requested behavior involve React/Next.js UI, routing, server/client boundaries, route handlers, caching, metadata, accessibility, or frontend tests.
+description: Use this skill for repository-based React or Next.js implementation, refactor, testing, review, or analysis when the target repository area is React or Next.js-specific, including UI, routing, server/client boundaries, route handlers, caching, metadata, accessibility, or React/Next frontend tests.
 ---
 
 # React and Next.js Change Code Skill
@@ -165,31 +165,13 @@ For Next.js implementation details, follow `references/nextjs-rules.md` when Nex
 
 Add or update tests for changed behavior unless there is a clear reason not to.
 
-Prefer the project's existing test stack and style.
-
-Use the test pyramid:
-
-- Put pure UI logic and component behavior in fast unit/component tests.
-- Use integration tests for routing, rendering with providers, form submission, data loading states, server/client interactions, route handlers, auth boundaries, and important cross-component flows.
-- Use e2e tests for critical browser workflows, navigation, accessibility-sensitive flows, and behavior that requires a real browser.
-- Do not move ordinary component logic coverage into slow e2e tests when a focused component test would cover it better.
+Prefer the project's existing test stack, style, helpers, providers, fixtures, and scripts.
 
 Test user-observable behavior, not implementation details.
 
-Cover relevant:
+Never make tests pass by weakening assertions, deleting relevant coverage, increasing timeouts without a cause, over-mocking core behavior, or skipping tests.
 
-- happy path;
-- regression case;
-- loading, empty, and error states;
-- invalid input and boundary values;
-- keyboard and focus behavior;
-- responsive or conditional rendering when behavior changes;
-- authorization/security behavior;
-- caching, revalidation, ordering, retry, idempotency, and failure behavior when relevant.
-
-Never make tests pass by weakening assertions, deleting coverage, increasing timeouts without a cause, over-mocking core behavior, or skipping tests.
-
-For detailed testing rules, follow `references/frontend-testing-rules.md`.
+For detailed UI, async, mock, accessibility, integration, and e2e testing guidance, follow `references/frontend-testing-rules.md`.
 
 ## Build and verification
 
@@ -201,11 +183,11 @@ For multi-package repositories, identify the owning package first and run packag
 
 Verification order:
 
-1. Run the narrowest relevant unit/component test first.
-2. Run route, integration, or e2e checks when behavior crosses routing, browser, server/client, or framework boundaries.
-3. Run typecheck when TypeScript types, route params, server/client boundaries, or public APIs changed.
-4. Run lint/format checks when configured and relevant.
-5. Run build when the change affects Next.js routing, metadata, server/client boundaries, static/dynamic rendering, cache behavior, configuration, or shared public components.
+1. Run the narrowest relevant test or module check first.
+2. Run typecheck when TypeScript types, route params, server/client boundaries, or public APIs changed.
+3. Run lint/format checks when configured and relevant.
+4. Run build when the change affects Next.js routing, metadata, server/client boundaries, static/dynamic rendering, cache behavior, configuration, or shared public components.
+5. Run broader module or e2e checks only when the change is risky, cross-cutting, or repository guidance requires it.
 
 Examples, adapt to the repository:
 
