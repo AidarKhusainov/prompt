@@ -28,6 +28,14 @@ Use these cases when reviewing routing and reference-loading changes for `react-
 - Expected references: `react-quality-rules.md` for behavior changes; none for pure copy.
 - Not expected: `next-change-code` unless Next-specific behavior is touched.
 
+### Pure UI in App Router page
+
+- Repository signals: `apps/web/app/dashboard/page.tsx`, `next` dependency exists, no data loading, metadata, route params, cache, runtime, or server/client boundary changes.
+- User request: "Change the button label and disabled visual state."
+- Expected routing: `react-change-code`.
+- Expected references: `react-quality-rules.md` for behavior changes; no Next references for pure copy.
+- Not expected: `next-change-code` unless route/data/cache/server-client/framework behavior is touched.
+
 ## Negative routing cases
 
 ### Next route handler
@@ -43,6 +51,27 @@ Use these cases when reviewing routing and reference-loading changes for `react-
 - User request: "Fix build script argument parsing."
 - Expected routing: `js-ts-change-code`.
 - Not expected: `react-change-code`.
+
+### Astro MDX-only content
+
+- Repository signals: Astro project, changed file is `src/content/post.mdx`, no React component behavior involved.
+- User request: "Fix MDX frontmatter and copy."
+- Expected routing: generic JS/TS/content handling or no framework-specific code skill.
+- Not expected: `react-change-code`.
+
+### Solid TSX component
+
+- Repository signals: `solid-js` dependency and Solid component patterns.
+- User request: "Fix disabled button behavior."
+- Expected routing: generic JS/TS or a future Solid-specific skill.
+- Not expected: `react-change-code`.
+
+### Remix loader/action/server routing behavior
+
+- Repository signals: Remix route file with loader/action or server redirect behavior.
+- User request: "Change loader validation and redirect behavior."
+- Expected routing: `js-ts-change-code` unless a dedicated Remix skill exists.
+- Not expected: `react-change-code`, because the task is framework server/routing behavior rather than React UI.
 
 ### Non-React JSX runtime
 
