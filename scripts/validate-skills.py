@@ -1,15 +1,5 @@
 #!/usr/bin/env python3
-"""Validate prompt skill bundle integrity.
-
-Checks are intentionally lightweight and dependency-free by default:
-- hidden/bidirectional/control Unicode characters in Markdown/YAML skill files;
-- skill frontmatter presence and required keys;
-- agent metadata YAML parse when PyYAML is available, with a strict fallback for this repo's simple YAML shape;
-- referenced `references/*.md` files exist in the owning skill bundle;
-- backticked short `*-rules.md` references resolve to files in the owning skill bundle's `references/` directory;
-- known stale reference filenames are not present;
-- README ordered lists use increasing numbers.
-"""
+"""Validate prompt skill bundle integrity."""
 
 from __future__ import annotations
 
@@ -23,7 +13,8 @@ ROOT = Path(__file__).resolve().parents[1]
 TEXT_GLOBS = ("*.md", "*.yaml", "*.yml")
 CONTROL_ALLOWED = {"\n", "\r", "\t"}
 FORBIDDEN_TEXT = {
-    "nextjs-app-router-rules.md": "stale Next.js reference filename; use nextjs-rules.md",
+    "nextjs-app-router-rules.md": "stale Next.js reference filename; use split files under skills/next-change-code/references/",
+    "nextjs-rules.md": "stale monolithic Next.js reference filename; use split files under skills/next-change-code/references/",
 }
 
 
@@ -61,17 +52,13 @@ def is_bad_hidden_char(ch: str) -> bool:
     codepoint = ord(ch)
     if ch in CONTROL_ALLOWED:
         return False
-    if unicodedata.category(ch) == "Cf":
-        return True
-    if codepoint == 0x7F:
-        return True
-    if 0x00 <= codepoint <= 0x1F:
-        return True
-    if 0x202A <= codepoint <= 0x202E:
-        return True
-    if 0x2066 <= codepoint <= 0x2069:
-        return True
-    return False
+    return (
+        unicodedata.category(ch) == "Cf"
+        or codepoint == 0x7F
+        or 0x00 <= codepoint <= 0x1F
+        or 0x202A <= codepoint <= 0x202E
+        or 0x2066 <= codepoint <= 0x2069
+    )
 
 
 def check_hidden_unicode(errors: list[str]) -> None:
@@ -81,10 +68,7 @@ def check_hidden_unicode(errors: list[str]) -> None:
             for col_no, ch in enumerate(line, start=1):
                 if is_bad_hidden_char(ch):
                     name = unicodedata.name(ch, "UNKNOWN")
-                    fail(
-                        errors,
-                        f"{rel(path)}:{line_no}:{col_no}: hidden/control char U+{ord(ch):04X} {name}",
-                    )
+                    fail(errors, f"{rel(path)}:{line_no}:{col_no}: hidden/control char U+{ord(ch):04X} {name}")
 
 
 def check_forbidden_text(errors: list[str]) -> None:
@@ -101,17 +85,14 @@ def parse_frontmatter(text: str) -> dict[str, str] | None:
     end = text.find("\n---\n", 4)
     if end == -1:
         return None
-    block = text[4:end]
     result: dict[str, str] = {}
-    for line in block.splitlines():
+    for line in text[4:end].splitlines():
         if not line.strip():
             continue
         if ":" not in line:
             raise ValueError(f"invalid frontmatter line: {line!r}")
         key, value = line.split(":", 1)
-        key = key.strip()
-        value = value.strip().strip('"')
-        result[key] = value
+        result[key.strip()] = value.strip().strip('"')
     return result
 
 
@@ -140,7 +121,6 @@ def load_yaml_if_available(text: str) -> Any:
 
 
 def parse_simple_agent_yaml(text: str) -> dict[str, str]:
-    """Strict fallback parser for the current simple agents/openai.yaml shape."""
     result: dict[str, str] = {}
     in_interface = False
     for raw_line in text.splitlines():
@@ -181,28 +161,33 @@ def skill_root_for(path: Path) -> Path | None:
         relative = path.relative_to(ROOT / "skills")
     except ValueError:
         return None
-    parts = relative.parts
-    if not parts:
-        return None
-    return ROOT / "skills" / parts[0]
+    return ROOT / "skills" / relative.parts[0] if relative.parts else None
 
 
 def check_reference_links(errors: list[str]) -> None:
-    reference_pattern = re.compile(r"`?(references/[A-Za-z0-9._/-]+\.md)`?")
+    owning_reference_pattern = re.compile(r"`(references/[A-Za-z0-9._/-]+\.md)`")
+    root_relative_skill_path_pattern = re.compile(r"`(skills/[A-Za-z0-9._/-]+\.md)`")
     short_rules_pattern = re.compile(r"`([A-Za-z0-9._-]+-rules\.md)`")
+
     for path in iter_skill_doc_files():
+        text = path.read_text(encoding="utf-8")
         root = skill_root_for(path)
+
+        for match in root_relative_skill_path_pattern.finditer(text):
+            target = ROOT / match.group(1)
+            if not target.is_file():
+                fail(errors, f"{rel(path)}: missing root-relative referenced file {match.group(1)!r}")
+
         if root is None:
             continue
-        text = path.read_text(encoding="utf-8")
-        for match in reference_pattern.finditer(text):
+
+        for match in owning_reference_pattern.finditer(text):
             target = root / match.group(1)
             if not target.is_file():
                 fail(errors, f"{rel(path)}: missing referenced file {match.group(1)!r}")
+
         for match in short_rules_pattern.finditer(text):
             filename = match.group(1)
-            if filename.startswith("references/"):
-                continue
             target = root / "references" / filename
             if not target.is_file():
                 fail(errors, f"{rel(path)}: missing short rules reference {filename!r}")
@@ -224,9 +209,7 @@ def check_readme_numbering(errors: list[str]) -> None:
                 expected = number + 1
             else:
                 expected += 1
-        elif line.strip() == "":
-            continue
-        else:
+        elif line.strip() != "":
             expected = None
 
 
