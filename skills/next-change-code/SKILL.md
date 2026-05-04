@@ -1,6 +1,6 @@
 ---
 name: next-change-code
-description: Use this skill for repository-based Next.js implementation, refactor, testing, review, or analysis when the work touches App Router, Pages Router, Server/Client boundaries, route handlers, API routes, Server Functions, Server Actions, caching, revalidation, metadata, middleware/proxy, images/fonts, runtime, or framework build behavior.
+description: Use this skill for repository-based Next.js implementation, refactor, testing, review, or analysis when the work touches Next-specific routing, App Router or Pages Router behavior, Server/Client boundaries, route handlers, API routes, Server Functions, Server Actions, caching, revalidation, metadata, middleware/proxy, images/fonts, runtime, or framework build behavior.
 ---
 
 # Next.js Change Code Skill
@@ -13,15 +13,17 @@ Use this skill only for Next.js-specific behavior. For ordinary React components
 
 ## Use this skill for
 
-- App Router pages, layouts, loading/error/not-found/template files, route groups, and route handlers.
-- Pages Router pages, API routes, `_app`, `_document`, and legacy data fetching.
+- App Router pages/layouts when the change touches routing, data loading, metadata, server/client boundaries, cache/runtime, route segment behavior, or framework behavior.
+- App Router loading/error/not-found/template files, route groups, and route handlers when their framework behavior changes.
+- Pages Router pages/API routes when the change touches routing, data fetching, response behavior, `_app`, `_document`, or framework behavior.
 - Server Components, Client Components, server/client boundary changes, Server Functions, and Server Actions.
 - Next.js caching, revalidation, static/dynamic rendering, runtime, metadata, sitemap/robots, images/fonts, middleware/proxy, redirects, rewrites, and framework build behavior.
 - Next-specific tests and verification.
 
 ## Do not use this skill for
 
-- React-only component, hook, form, or accessibility changes that do not touch Next-specific behavior: use `react-change-code`.
+- React-only component, hook, form, copy, styling, or accessibility changes that do not touch Next-specific behavior: use `react-change-code`.
+- Pure UI/copy changes inside `app/**/page.*` or `pages/**` when no route, data loading, metadata, cache, runtime, server/client boundary, or framework behavior changes.
 - Generic JS/TS utilities, package scripts, Node workers, codegen, backend services, or tooling in a Next monorepo: use `js-ts-change-code`.
 - Files named `middleware.*` or `proxy.*` without Next evidence.
 - Non-Next React frameworks such as Remix unless only React UI behavior is being changed.
@@ -90,8 +92,8 @@ In review/analyze mode, do not edit files. Report concrete findings, risks, reco
 
 Prefer narrow checks first:
 
-- component-only UI in Next: focused component test plus React rules;
-- route/page/layout changes: route-level tests or build plus typecheck;
+- React-only UI in Next: use `react-change-code` verification, not Next build by default;
+- route/page/layout framework behavior: route-level tests or build plus typecheck;
 - server/client boundary changes: typecheck and build;
 - route handlers/API routes: tests for method, status, headers, body, auth, validation, and errors;
 - metadata, image/font, config, cache, runtime, middleware/proxy: build and targeted tests where available;
