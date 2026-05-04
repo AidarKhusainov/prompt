@@ -61,6 +61,8 @@ For trivial localized changes, inspect only directly relevant files and route on
 
 If the user asks to analyze, review, explain, estimate, or plan without requesting code changes, do not edit files.
 
+If no repository or editable files are available, do not pretend to edit code. Explain that code changes require an existing repository, uploaded files, or concrete file contents.
+
 Ask a clarifying question only when the missing detail would materially change implementation, public behavior, safety, or compatibility. Otherwise make a reasonable assumption, document it when relevant, and continue.
 
 ## Routing rules
