@@ -48,6 +48,13 @@ Use these cases when reviewing routing and reference-loading changes for `next-c
 - Expected routing: `react-change-code`.
 - Not expected: Next references.
 
+### Pure UI in App Router page
+
+- Repository signals: `apps/web/app/dashboard/page.tsx`, `next` dependency, App Router structure.
+- User request: "Change the button label and disabled visual state."
+- Expected routing: `react-change-code`.
+- Not expected: `next-change-code` or Next references, because no route/data/cache/server-client/framework behavior changes.
+
 ### Node worker in Next monorepo
 
 - Repository signals: `apps/web` contains Next, changed file is `services/worker/src/job.ts`.
@@ -60,6 +67,13 @@ Use these cases when reviewing routing and reference-loading changes for `next-c
 - Repository signals: `server/middleware.ts`, Express/Koa/Fastify/Nest backend, no `next` dependency or `next/server` imports.
 - User request: "Fix auth middleware error handling."
 - Expected routing: `js-ts-change-code`.
+- Not expected: `next-change-code`.
+
+### Remix loader/action/server routing behavior
+
+- Repository signals: Remix route file with loader/action or server redirect behavior.
+- User request: "Change loader validation and redirect behavior."
+- Expected routing: `js-ts-change-code` unless a dedicated Remix skill exists.
 - Not expected: `next-change-code`.
 
 ## Reference-loading regression checks
