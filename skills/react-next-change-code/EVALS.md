@@ -11,21 +11,21 @@ The goal is to keep older integrations working while routing new work to narrowe
 - Repository signals: `packages/ui/Button.tsx`, `react` in owning package, React component imports/hooks nearby.
 - User request: "Fix Button disabled state and add a component test."
 - Expected compatibility routing: `react-next-change-code` -> `react-change-code`.
-- Expected references after routing: `react-quality-rules.md`, `frontend-testing-rules.md`.
+- Expected references after routing: React quality and frontend testing references from `react-change-code`.
 
 ### Next route handler
 
 - Repository signals: `apps/web/app/api/users/route.ts`, `next` in package, `NextRequest`/`NextResponse` imports nearby.
 - User request: "Validate query params and return 400 for invalid input."
 - Expected compatibility routing: `react-next-change-code` -> `next-change-code`.
-- Expected references after routing: `next-routing-api-rules.md`; optionally JS/TS validation rules.
+- Expected references after routing: routing/API reference from `next-change-code`; optionally JS/TS validation rules.
 
 ### Next middleware/proxy with Next evidence
 
 - Repository signals: `apps/web/middleware.ts` or `apps/web/proxy.ts`, `next` in package, `next/server` imports, Next route structure nearby.
 - User request: "Update auth redirect behavior in middleware."
 - Expected compatibility routing: `react-next-change-code` -> `next-change-code`.
-- Expected references after routing: `next-middleware-proxy-rules.md`, `next-project-detection-rules.md`.
+- Expected references after routing: middleware/proxy and project detection references from `next-change-code`.
 
 ## Negative compatibility cases
 
