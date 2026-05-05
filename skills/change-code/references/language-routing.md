@@ -27,6 +27,38 @@ Common signals:
 
 Do not route Kotlin-only modules to `java-change-code` unless the task also changes Java Maven/Gradle code.
 
+### Spring Java
+
+Use `spring-java-change-code` when available if Java Maven/Gradle work touches Spring-specific behavior.
+
+Strong Spring signals:
+
+- `org.springframework.boot` Gradle plugin;
+- `spring-boot-maven-plugin`;
+- `spring-boot-starter-*` dependencies;
+- `@SpringBootApplication`, `@SpringBootConfiguration`, `@EnableAutoConfiguration`;
+- `@RestController`, `@Controller`, `@Service`, `@Repository`, `@Configuration`, or `@ConfigurationProperties` with Spring imports;
+- `SecurityFilterChain`, `@EnableWebSecurity`, `@PreAuthorize`, `@PostAuthorize`, or method-security configuration;
+- `JpaRepository`, `CrudRepository`, `PagingAndSortingRepository`, or Spring Data repositories;
+- `application.yml`, `application.yaml`, or `application.properties` with `spring.*` configuration;
+- `AutoConfiguration.imports` or `spring.factories`.
+
+Spring-specific behavior includes:
+
+- Spring Boot application behavior;
+- Spring MVC/WebFlux controllers, request/response DTOs, validation, error mapping, filters, interceptors, or HTTP API contracts;
+- Spring Security auth/authz, CSRF, CORS, sessions, tokens, method security, security headers, or actuator exposure;
+- Spring Data, JPA behavior, repository queries, transactions, configuration properties, profiles, auto-configuration, bean wiring, scheduled jobs, events, or messaging;
+- Spring testing, test slices, full-context integration tests, random-port HTTP tests, or Testcontainers wiring.
+
+Weak Spring signals:
+
+- mentions of "spring" in README or comments only;
+- generic `@Transactional` before checking the import;
+- artifact names that merely contain `spring` without Spring code or build evidence.
+
+Do not use `spring-java-change-code` only because a repository is a Spring app. If the requested change is pure Java logic and does not cross a Spring boundary, use `java-change-code` and keep verification focused on unit tests unless local conventions require more.
+
 ### JavaScript and TypeScript
 
 Use `js-ts-change-code` for JS/TS changes that are not better handled by a more specific framework skill.
@@ -100,10 +132,10 @@ For monorepos and mixed modules:
 
 Examples:
 
-- Java backend plus React frontend: route API implementation to Java; route UI changes to React; route API contract changes through both sides if needed.
+- Java backend plus React frontend: route Spring API implementation to Spring Java when Spring behavior is involved; route pure Java backend logic to Java; route UI changes to React; route API contract changes through both sides if needed.
 - Next.js frontend plus Node worker: route app route/component/server-action changes to Next.js or React as appropriate; route worker-only changes to JS/TS.
 - React package plus shared TypeScript utilities: route component or hook changes to React; route utility-only changes to JS/TS unless the utility's contract is React-specific.
-- Shell script that invokes a Java service: route script-only fixes to shell; route service behavior changes to Java.
+- Shell script that invokes a Java service: route script-only fixes to shell; route service behavior changes to Java or Spring Java depending on whether Spring-managed behavior is involved.
 - Generated client from OpenAPI: edit the OpenAPI source when appropriate, not generated output, and verify both generator and affected consumer when practical.
 
 ## Compatibility routers
