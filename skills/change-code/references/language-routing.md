@@ -6,6 +6,7 @@ Use this reference when the repository stack is not obvious, the repository is m
 
 - Route by the files and behavior that must change, not by the repository's largest language.
 - Prefer the most specific available skill or profile that matches the requested task.
+- Use framework skills only for framework-specific behavior; use language skills for pure language logic inside framework repositories.
 - When a repository has multiple build systems, identify the owning module before running commands.
 - When signals conflict, inspect nearby source, tests, package manifests, and CI workflows before editing.
 - When no language-specific or framework-specific profile exists, follow `change-code` and local repository conventions without inventing unsupported language rules.
@@ -25,6 +26,38 @@ Common signals:
 - `mvnw`, `gradlew`
 
 Do not route Kotlin-only modules to `java-change-code` unless the task also changes Java Maven/Gradle code.
+
+### Spring Java
+
+Use `spring-java-change-code` when available if Java Maven/Gradle work touches Spring-specific behavior.
+
+Strong Spring signals:
+
+- `org.springframework.boot` Gradle plugin;
+- `spring-boot-maven-plugin`;
+- `spring-boot-starter-*` dependencies;
+- `@SpringBootApplication`, `@SpringBootConfiguration`, `@EnableAutoConfiguration`;
+- `@RestController`, `@Controller`, `@Service`, `@Repository`, `@Configuration`, or `@ConfigurationProperties` with Spring imports;
+- `SecurityFilterChain`, `@EnableWebSecurity`, `@PreAuthorize`, `@PostAuthorize`, or method-security configuration;
+- `JpaRepository`, `CrudRepository`, `PagingAndSortingRepository`, or Spring Data repositories;
+- `application.yml`, `application.yaml`, or `application.properties` with `spring.*` configuration;
+- `AutoConfiguration.imports` or `spring.factories`.
+
+Spring-specific behavior includes:
+
+- Spring Boot application behavior;
+- Spring MVC/WebFlux controllers, request/response DTOs, validation, error mapping, filters, interceptors, or HTTP API contracts;
+- Spring Security auth/authz, CSRF, CORS, sessions, tokens, method security, security headers, or actuator exposure;
+- Spring Data, JPA behavior, repository queries, transactions, configuration properties, profiles, auto-configuration, bean wiring, scheduled jobs, events, or messaging;
+- Spring testing, test slices, full-context integration tests, random-port HTTP tests, or Testcontainers wiring.
+
+Weak Spring signals:
+
+- mentions of "spring" in README or comments only;
+- generic `@Transactional` before checking the import;
+- artifact names that merely contain `spring` without Spring code or build evidence.
+
+Do not use `spring-java-change-code` only because a repository is a Spring app. If the requested change is pure Java logic and does not cross a Spring boundary, use `java-change-code` and keep verification focused on unit tests unless local conventions require more.
 
 ### React and Next.js
 
@@ -99,10 +132,10 @@ For monorepos and mixed modules:
 
 Examples:
 
-- Java backend plus React frontend: route API implementation to Java; route UI changes to React/Next.js; route API contract changes through both sides if needed.
+- Java backend plus React frontend: route Spring API implementation to Spring Java when Spring behavior is involved; route pure Java backend logic to Java; route UI changes to React/Next.js; route API contract changes through both sides if needed.
 - Next.js frontend plus Node worker: route app route/component/server-action changes to React/Next.js; route worker-only changes to JS/TS.
 - React package plus shared TypeScript utilities: route component or hook changes to React/Next.js; route utility-only changes to JS/TS unless the utility's contract is React-specific.
-- Shell script that invokes a Java service: route script-only fixes to shell; route service behavior changes to Java.
+- Shell script that invokes a Java service: route script-only fixes to shell; route service behavior changes to Java or Spring Java depending on whether Spring-managed behavior is involved.
 - Generated client from OpenAPI: edit the OpenAPI source when appropriate, not generated output, and verify both generator and affected consumer when practical.
 
 ## Ambiguous cases
