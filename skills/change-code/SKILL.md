@@ -1,6 +1,6 @@
 ---
 name: change-code
-description: Use this skill as the minimal router for repository-based code changes when the best language or framework skill is not obvious. Detect the affected files, behavior, stack, package/module ownership, and route to the narrowest available skill such as java-change-code, js-ts-change-code, react-change-code, next-change-code, or shell references.
+description: Use this skill as the minimal router for repository-based code changes when the best language or framework skill is not obvious. Detect the affected files, behavior, stack, package/module ownership, and route to the narrowest available skill such as java-change-code, spring-java-change-code, js-ts-change-code, react-change-code, next-change-code, or shell references.
 ---
 
 # Change Code Router Skill
@@ -15,11 +15,12 @@ This skill should stay small. It is a dispatcher, not the place for detailed lan
 
 - New code-change requests where the stack is unknown or mixed.
 - Cross-stack tasks that may involve several modules.
-- Repository inspection before selecting Java, JS/TS, React, Next.js, shell, or another supported profile.
+- Repository inspection before selecting Java, Spring Java, JS/TS, React, Next.js, shell, or another supported profile.
 - Fallback work when no narrower profile exists and the change is low-risk.
 
 ## Do not use this skill as the final layer when
 
+- Spring-specific Java Maven/Gradle work clearly matches `spring-java-change-code`.
 - Java Maven/Gradle work clearly matches `java-change-code`.
 - Generic JS/TS work clearly matches `js-ts-change-code`.
 - React UI/components/hooks/frontend tests clearly match `react-change-code`.
@@ -71,6 +72,7 @@ Read `references/language-routing.md` when the stack is not obvious, the reposit
 
 Routing defaults:
 
+- Spring-specific Java Maven/Gradle repository or module work: prefer `spring-java-change-code`, but do not use it for pure Java logic that does not cross a Spring boundary.
 - Java Maven/Gradle repository or module: prefer `java-change-code`.
 - Next.js routing, App Router, Pages Router, Server/Client boundary, route handler, API route, Server Function, Server Action, caching, metadata, middleware/proxy, runtime, or framework build behavior: prefer `next-change-code`.
 - React UI, components, hooks, providers, forms, accessibility, rendering, or React frontend tests without Next-specific behavior: prefer `react-change-code`.
