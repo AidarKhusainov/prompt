@@ -57,6 +57,10 @@ Examples:
 - serialization/deserialization contracts through JSON tests;
 - security behavior through a security-enabled slice or full-context test when the endpoint boundary matters.
 
+Before choosing MVC vs WebFlux test support, inspect the actual application type and existing tests. If both Spring MVC and WebFlux are on the classpath, Spring Boot configures an MVC application context by default. Reactive tests require an explicit reactive application type such as `spring.main.web-application-type=reactive` or clear existing project conventions.
+
+Do not choose WebFlux/WebTestClient only because WebFlux classes are present on the classpath.
+
 Mock collaborators only when they are outside the slice and the test still asserts observable behavior at that slice boundary.
 
 ## Full-context integration tests
@@ -80,6 +84,8 @@ Use explicit cleanup, isolated test data, rollback through application behavior,
 Use Testcontainers when behavior depends on real infrastructure semantics: PostgreSQL/MySQL-specific SQL, constraints and indexes, JSON/array/db-specific column types, transaction behavior, Kafka/Rabbit/Redis/etc. behavior, or compatibility with production-like services.
 
 When Spring Boot supports it for the project version, prefer `@ServiceConnection` or existing project conventions for wiring container connection details.
+
+Before recommending `@ServiceConnection`, verify that the project uses Spring Boot 3.1 or newer and has `spring-boot-testcontainers` available as a test dependency, or that adding it is necessary and permitted for the task.
 
 Do not start Testcontainers for pure business logic.
 
