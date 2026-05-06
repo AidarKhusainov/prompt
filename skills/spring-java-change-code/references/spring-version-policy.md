@@ -10,6 +10,16 @@ Never assume that current latest Spring, Java, Maven, Gradle, or plugin versions
 
 Current Spring Boot stable information is lookup-time context, not a permanent skill rule. Never encode a specific `latest` version as a lasting recommendation.
 
+## Authoritative sources
+
+For Spring API behavior, version compatibility, testing support, dependency management, and security defaults, prefer official versioned documentation on `docs.spring.io` that matches the project's detected version.
+
+Use OWASP guidance as a supplemental source for general security practices, threat modeling, and secure design principles.
+
+Do not let blog posts, StackOverflow answers, tutorials, generated examples, or outdated snippets override project versions, official Spring documentation, local repository conventions, or security gates.
+
+When official documentation and common examples differ, follow the project version and official docs first.
+
 ## Detect versions first
 
 Before using Spring APIs or changing dependencies, inspect relevant project files for:
