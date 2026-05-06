@@ -9,7 +9,7 @@ description: Use this skill as a Spring-specific overlay on top of java-change-c
 
 Implement focused code changes in existing Java Spring or Spring Boot Maven/Gradle repositories.
 
-This skill is an overlay on top of `java-change-code`. First follow `java-change-code`; this skill only adds Spring-specific detection, version policy, references, testing guidance, web/API rules, and security gates.
+This skill is an overlay on top of `java-change-code`. First follow `java-change-code`; this skill only adds Spring-specific detection, version policy, references, testing guidance, web/API rules, security gates, and persistence/transaction guardrails.
 
 Act as a senior Java/Spring engineer. Prefer simple, idiomatic, maintainable Spring code that follows the repository's current architecture, Spring versions, dependency management, and testing style.
 
@@ -72,6 +72,8 @@ Read `references/spring-security-rules.md` before editing when the task touches 
 
 Read `references/spring-testing-rules.md` before adding or changing Spring tests, choosing between unit/slice/integration/random-port tests, stubbing integrations, adding Testcontainers, or changing test configuration.
 
+Read `references/spring-jpa-transactions-rules.md` before editing Spring Data repositories, JPA entities, repository queries, transaction boundaries, schema/migration-adjacent persistence behavior, or tests that depend on real database semantics.
+
 For trivial localized changes, load only the references directly relevant to the changed behavior.
 
 ## Default workflow additions
@@ -85,7 +87,7 @@ After the base `java-change-code` repository inspection:
 5. Prefer observable-behavior tests at the narrowest reliable boundary.
 6. Keep internal Spring application components real by default in integration tests; stub true external integrations.
 7. Run the narrowest relevant Maven/Gradle verification command available for the owning module.
-8. Self-review for accidental contract, security, dependency, version, and test-scope regressions.
+8. Self-review for accidental contract, security, dependency, version, persistence, transaction, and test-scope regressions.
 
 ## Permission gates
 
