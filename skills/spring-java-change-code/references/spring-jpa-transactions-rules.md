@@ -52,11 +52,27 @@ Do not add eager fetching globally to fix one use case unless the project alread
 
 Do not silently switch to H2 or an in-memory substitute when production database-specific behavior matters.
 
+## Spring Data semantics
+
+Preserve repository method contracts and existing nullability conventions.
+
+Be careful with:
+
+- `Optional<T>` vs nullable return values vs project-specific null-object conventions;
+- `findById` vs `getReferenceById` and lazy reference behavior;
+- `Page` vs `Slice`, including whether count-query behavior is required;
+- derived-query method names and generated SQL semantics;
+- `@Modifying` and required transaction boundaries for update/delete queries;
+- flush behavior when bulk updates bypass the persistence context;
+- lock annotations and optimistic/pessimistic locking behavior.
+
+Prefer the repository's existing style: derived queries, `@Query`, specifications, Querydsl, Criteria API, custom repository implementations, jOOQ, JDBC, or another project convention.
+
+Do not hide database-specific behavior by replacing real persistence tests with H2-only tests or repository mocks when SQL/JPA semantics matter.
+
 ## Repository changes
 
 Preserve repository method contracts, query parameter semantics, sorting, pagination, locking behavior, and null/empty result behavior unless explicitly requested.
-
-Prefer existing repository style: derived queries, `@Query`, specifications, Querydsl, Criteria API, custom repository implementations, jOOQ, JDBC, or another project convention.
 
 Do not introduce a new persistence abstraction for a small query change.
 
@@ -95,6 +111,9 @@ Before finishing, check that:
 - rollback behavior is explicit when it matters;
 - Spring proxy/self-invocation semantics were considered when adding or moving `@Transactional`;
 - lazy loading is not hidden by a broader web transaction;
+- repository method semantics and nullability conventions were preserved;
+- `Page` vs `Slice`, count-query, and locking behavior remain intentional;
+- update/delete queries have the required transaction and `@Modifying` behavior;
 - queries are deterministic and pagination-safe;
 - no N+1 issue was introduced for common paths;
 - schema or migration changes were gated;
