@@ -8,6 +8,16 @@ Do not accidentally change public API behavior. Preserve existing route paths, H
 
 Changing a public contract is a permission-gated change unless the user explicitly requested that exact contract change.
 
+## MVC vs WebFlux
+
+Do not choose Spring MVC vs WebFlux implementation or testing style only from classpath presence.
+
+Inspect the actual application type, existing controllers, existing tests, `spring.main.web-application-type`, and local conventions.
+
+If both MVC and WebFlux dependencies are present but the app and tests are MVC, prefer the existing MVC/MockMvc style unless the requested behavior is reactive/WebFlux-specific.
+
+Do not introduce reactive types, handlers, routers, WebFlux tests, or WebTestClient only because WebFlux classes are present.
+
 ## Controllers and boundaries
 
 Keep controllers thin. Controllers should usually handle request mapping, authentication principal extraction when needed, input validation boundary, request-to-command/query mapping, response mapping, status codes, and headers.
