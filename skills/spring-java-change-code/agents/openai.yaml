@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spring Java Change Code"
+  short_description: "Implement safe Spring Java repo changes"
+  default_prompt: "Use spring-java-change-code to implement this Spring Java code change safely in the current repository."
