@@ -32,6 +32,18 @@ Before using Spring APIs or changing dependencies, inspect relevant project file
 
 Use APIs compatible with the detected project versions.
 
+## Namespace compatibility
+
+Check the detected Spring Boot and Spring Framework generation before using `javax.*` vs `jakarta.*` imports.
+
+Do not migrate namespaces unless explicitly requested or required by the detected project version.
+
+Avoid introducing `jakarta.*` into Spring Boot 2.x or Spring Framework 5.x projects.
+
+Avoid introducing `javax.*` into Spring Boot 3+ or Spring Framework 6+ code unless the repository already requires it for a specific dependency boundary.
+
+Check validation, servlet, persistence, annotation, and transaction imports carefully when copying examples or generating code.
+
 ## Existing projects
 
 For existing projects:
@@ -59,15 +71,16 @@ When adding dependencies:
 
 1. Prefer existing dependencies and framework-provided starters first.
 2. Avoid production dependencies for small helpers that are clearer with standard library or existing project utilities.
-3. Ask before adding production dependencies unless the user explicitly requested the dependency addition.
+3. Ask before adding production dependencies unless the user explicitly requested the dependency addition, or the dependency is clearly necessary for the requested feature, low-risk, and matches the repository's existing dependency-management style.
 4. Do not upgrade unrelated dependencies or plugins.
-5. Explain why a new dependency is necessary, what alternatives were considered, and whether it is managed by the existing BOM.
+5. Explain why a new dependency is necessary, what alternatives were considered, whether it is managed by the existing BOM, and what files changed.
 
 ## Version-sensitive self-review
 
 Before finishing, check:
 
 - the code compiles against the detected Java and Spring versions;
+- `javax.*` vs `jakarta.*` imports match the detected Spring generation;
 - no newer Spring APIs were introduced accidentally;
 - no managed dependency version was overridden accidentally;
 - no wrapper, plugin, BOM, version catalog, or lockfile changed unless directly required;
