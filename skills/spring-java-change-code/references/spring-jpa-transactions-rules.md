@@ -10,6 +10,10 @@ Do not put transaction orchestration in controllers or transport adapters unless
 
 Do not broaden transaction scope casually. Long transactions can hold locks, increase contention, hide lazy-loading problems, and couple unrelated operations.
 
+Be careful with Spring proxy boundaries. In default proxy mode, `@Transactional` is applied to external calls through the Spring proxy; self-invocation inside the same bean does not start a new transactional boundary.
+
+Do not fix transaction behavior by moving orchestration into controllers or by self-injecting beans unless the project already uses that pattern and the tradeoff is understood. Prefer clear service/use-case boundaries.
+
 Treat transaction-boundary changes as permission-gated when they affect public behavior, consistency, rollback, locking, retries, idempotency, or integration side effects.
 
 ## Rollback semantics
@@ -25,6 +29,10 @@ Be careful with:
 - read-only transactions;
 - transaction boundaries around external calls;
 - events published before or after commit.
+
+For `REQUIRES_NEW`, consider connection-pool impact and independent commit/rollback semantics.
+
+For `NESTED`, verify that the transaction manager and database support savepoints.
 
 Do not hide persistence errors with broad catches, silent fallbacks, or swallowed exceptions.
 
@@ -85,6 +93,7 @@ Before finishing, check that:
 
 - transaction boundaries are still intentional;
 - rollback behavior is explicit when it matters;
+- Spring proxy/self-invocation semantics were considered when adding or moving `@Transactional`;
 - lazy loading is not hidden by a broader web transaction;
 - queries are deterministic and pagination-safe;
 - no N+1 issue was introduced for common paths;
