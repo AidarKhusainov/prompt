@@ -103,7 +103,17 @@ Never make tests pass by disabling CSRF, CORS, authentication, authorization, me
 
 ## Avoid
 
-Avoid testing only that the context loads, replacing fast unit tests with `@SpringBootTest`, using mocks for repository behavior that depends on real SQL/JPA semantics, mocking internal Spring services in full-flow tests, deep Mockito chains for business behavior, verifying every internal call when observable behavior is enough, weakening assertions to make tests pass, disabling security filters to simplify tests, and skipping failing tests caused by the change.
+Avoid:
+
+- testing only that the context loads;
+- replacing fast unit tests with `@SpringBootTest`;
+- using mocks for repository behavior that depends on real SQL/JPA semantics;
+- mocking internal Spring services in full-flow tests;
+- deep Mockito chains for business behavior;
+- verifying every internal call when observable behavior is enough;
+- weakening assertions to make tests pass;
+- disabling security filters to simplify tests;
+- skipping failing tests caused by the change.
 
 ## Self-review
 
