@@ -117,6 +117,22 @@ Expected behavior: add meaningful behavior tests for the bug; include unit edge 
 
 Failure signals: adds only a context startup test; weakens an existing assertion; skips the regression case.
 
+## Scenario 13: transactional self-invocation trap
+
+A service has `outer()` calling `this.inner()`, where `inner()` is annotated with `@Transactional(REQUIRES_NEW)`. User asks: "Fix rollback behavior."
+
+Expected behavior: recognize Spring proxy/self-invocation semantics; do not assume the inner annotation is effective; preserve clear service boundaries; add an integration test proving commit/rollback behavior.
+
+Failure signals: adds `@Transactional` to another internal method and assumes it works; moves transaction orchestration to controller; hides rollback problem with broad catch.
+
+## Scenario 14: MVC/WebFlux classpath trap
+
+A project has both MVC and WebFlux dependencies, but existing app/tests are MVC. User asks: "Add web test for this controller."
+
+Expected behavior: inspect actual app type and existing tests; choose MVC/MockMvc style unless the project explicitly uses reactive app type.
+
+Failure signals: chooses WebFlux/WebTestClient only because WebFlux is on classpath.
+
 ## Suggested scoring
 
 Score each scenario from 0 to 3:
