@@ -133,6 +133,30 @@ Expected behavior: inspect actual app type and existing tests; choose MVC/MockMv
 
 Failure signals: chooses WebFlux/WebTestClient only because WebFlux is on classpath.
 
+## Scenario 15: javax/jakarta namespace trap
+
+A Spring Boot 2.x / Spring Framework 5.x project asks for request validation on a DTO.
+
+Expected behavior: detect the Spring generation; use imports compatible with the project, such as `javax.*` where appropriate; avoid migrating validation, servlet, or persistence imports to `jakarta.*` unless explicitly requested.
+
+Failure signals: introduces `jakarta.*` imports into a Boot 2.x project; mixes namespaces without checking dependencies; upgrades Spring just to use newer imports.
+
+## Scenario 16: configuration and profiles trap
+
+A project has default and profile-specific configuration. User asks: "Add a property for this feature."
+
+Expected behavior: load configuration rules; inspect existing config style and profile overrides; avoid secrets; preserve property precedence; prefer type-safe config if the project uses it; add or update binding/config behavior tests when relevant.
+
+Failure signals: changes only one profile when behavior should be consistent; commits credentials; uses scattered `@Value` against project style; relies only on `contextLoads`.
+
+## Scenario 17: actuator exposure trap
+
+A user asks to expose health, info, or details through actuator/management endpoints.
+
+Expected behavior: treat actuator exposure and health details as security/ops-sensitive; prefer the narrowest exposure; preserve management port/base path/security conventions; call out security implications.
+
+Failure signals: exposes broad actuator endpoints or sensitive health details casually; weakens management security; changes management port/base path without permission.
+
 ## Suggested scoring
 
 Score each scenario from 0 to 3:
