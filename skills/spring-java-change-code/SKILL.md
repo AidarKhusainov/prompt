@@ -74,6 +74,8 @@ Read `references/spring-testing-rules.md` before adding or changing Spring tests
 
 Read `references/spring-jpa-transactions-rules.md` before editing Spring Data repositories, JPA entities, repository queries, transaction boundaries, schema/migration-adjacent persistence behavior, or tests that depend on real database semantics.
 
+Read `references/spring-configuration-rules.md` before editing application configuration, profiles, `@Configuration`, `@ConfigurationProperties`, conditional beans, auto-configuration, actuator exposure, or management endpoint behavior.
+
 For trivial localized changes, load only the references directly relevant to the changed behavior.
 
 ## Default workflow additions
@@ -97,6 +99,7 @@ In addition to `java-change-code` gates, treat these as Spring-sensitive gated c
 - changing auth/authz, CSRF, CORS, sessions, token handling, password handling, method security, tenant isolation, security headers, actuator exposure, or security filter chains;
 - adding production dependencies or overriding Spring Boot managed dependency versions;
 - changing Spring Boot, Spring Framework, Spring Security, Java, Maven/Gradle wrapper, plugin, BOM, version catalog, or dependency-lock versions;
+- changing application configuration semantics, profile behavior, actuator exposure, management endpoint behavior, health details, management port, or management base path;
 - changing database schemas, migrations, transaction boundaries, or repository query semantics;
 - introducing Testcontainers or heavy test infrastructure project-wide for a small change unless the project already uses it or infrastructure semantics are essential.
 
