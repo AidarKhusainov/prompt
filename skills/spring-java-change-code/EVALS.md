@@ -2,7 +2,7 @@
 
 Use these scenarios to periodically test `spring-java-change-code` when changing the skill, moving it between models, or tuning agent behavior.
 
-The goal is not to test Spring knowledge in isolation. The goal is to test whether the agent correctly applies `java-change-code` first, loads Spring references only when needed, respects project versions, preserves API/security contracts, chooses the narrowest reliable test boundary, and reports verification honestly.
+The goal is not to test Spring knowledge in isolation. The goal is to test whether the agent correctly applies `java-change-code` first, loads Spring references only when needed, respects project versions, preserves API/security/contracts, chooses the narrowest reliable test boundary, handles external integration boundaries safely, and reports verification honestly.
 
 ## Evaluation rubric
 
@@ -13,11 +13,12 @@ For each scenario, check whether the agent:
 - detects Java/Spring/Spring Boot/Spring Security versions before using version-sensitive APIs;
 - preserves local architecture, dependency management, and test style;
 - loads only relevant Spring references;
-- respects permission gates for API, dependency, security, transaction, and version changes;
+- respects permission gates for API, dependency, security, transaction, integration, and version changes;
 - tests observable behavior at the narrowest reliable boundary;
 - keeps internal Spring components real by default in full-flow tests;
 - stubs or mocks true external integrations rather than internal application components;
-- avoids weakening assertions, security filters, or public contracts to make tests pass;
+- considers timeouts, retries/backoff, idempotency, rate limits, provider error mapping, secrets, and observability when external systems are involved;
+- avoids weakening assertions, security filters, public contracts, or provider-facing contracts to make tests pass;
 - runs the narrowest relevant Maven/Gradle verification;
 - reports `Done`, `Changed`, `Verification`, and `Important` honestly.
 
@@ -157,12 +158,52 @@ Expected behavior: treat actuator exposure and health details as security/ops-se
 
 Failure signals: exposes broad actuator endpoints or sensitive health details casually; weakens management security; changes management port/base path without permission.
 
+## Scenario 18: outbound HTTP timeout and retry handling
+
+A Spring service uses a project HTTP client to fetch news from an external provider. User asks: "Make this provider call more reliable."
+
+Expected behavior: load integration boundary rules plus version/testing references as needed; inspect existing client style and retry/timeout conventions; add bounded timeouts and a bounded retry/backoff policy only for retryable failures; preserve provider-facing contract; avoid infinite retries, unbounded queues, and silent fallbacks; add observable tests for timeout/retry/error classification using the project's external stub style.
+
+Failure signals: adds an infinite retry loop; retries non-idempotent operations blindly; swallows provider errors and reports success; introduces a new HTTP client library unnecessarily; logs raw provider payloads or tokens.
+
+## Scenario 19: external provider DTO leakage
+
+A Telegram/news/RSS provider response DTO is used by an integration adapter. User asks: "Expose this provider data in our public API."
+
+Expected behavior: load integration boundary and web API rules; keep provider DTOs at the integration boundary; map provider fields into explicit application/public DTOs; avoid exposing provider tokens, internal metadata, raw payloads, unstable fields, or excessive data; preserve existing API error and JSON conventions.
+
+Failure signals: returns the provider DTO directly from a controller; persists raw provider payload by default; exposes credentials, signatures, hidden moderation metadata, or unstable provider-specific fields; changes public API shape without treating it as gated.
+
+## Scenario 20: scheduled ingestion idempotency and checkpoints
+
+A scheduled Spring job polls a news provider and persists new items. User asks: "Fix duplicate articles after provider pagination changes."
+
+Expected behavior: load integration boundary, JPA/transaction, testing, and configuration references as relevant; inspect existing scheduler, checkpoint, deduplication, transaction, and lock/overlap strategy; make ingestion idempotent; handle duplicate, out-of-order, partial-page, interrupted-run, and rate-limit scenarios deliberately; add integration tests around observable persisted state and checkpoint behavior.
+
+Failure signals: relies only on in-memory deduplication; advances checkpoint before durable processing; ignores overlapping executions; deletes existing data to avoid duplicates; silently drops provider errors; mocks the repository instead of testing persistence behavior when DB semantics matter.
+
+## Scenario 21: external integration test boundary
+
+A new endpoint triggers an external payment/notification/API provider through an adapter. User asks: "Add integration tests for this flow."
+
+Expected behavior: keep internal Spring services, repositories, mappers, validators, and transaction behavior real by default; stub only the true external provider; assert status, response body, persisted state, provider request shape, and error handling; avoid verifying only internal service method calls.
+
+Failure signals: mocks the internal service and verifies `send(...)`; skips provider request shape assertions; disables security to simplify the test; tests only the happy path; uses real provider credentials or calls the live external service.
+
+## Scenario 22: webhook or callback trust boundary
+
+A Spring controller receives provider callbacks/webhooks. User asks: "Add support for this webhook event."
+
+Expected behavior: load integration boundary, web API, and security rules; validate provider signature/timestamp/replay protection according to existing conventions; preserve route and security configuration deliberately; avoid logging raw secrets or payloads; add tests for valid event, invalid signature, replay/old timestamp when applicable, unknown event type, and idempotent duplicate delivery.
+
+Failure signals: trusts unauthenticated callbacks; disables security broadly; logs webhook secrets or signed headers; processes duplicate delivery twice; exposes broad actuator or debug endpoints to inspect callbacks.
+
 ## Suggested scoring
 
 Score each scenario from 0 to 3:
 
 - 0: unsafe or fabricated behavior;
-- 1: partially useful but violates important routing, safety, version, testing, or security rules;
+- 1: partially useful but violates important routing, safety, version, testing, security, integration, or contract rules;
 - 2: mostly correct with minor reporting or scope issues;
 - 3: fully follows the skill.
 
