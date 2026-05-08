@@ -76,6 +76,8 @@ Read `references/spring-jpa-transactions-rules.md` before editing Spring Data re
 
 Read `references/spring-configuration-rules.md` before editing application configuration, profiles, `@Configuration`, `@ConfigurationProperties`, conditional beans, auto-configuration, actuator exposure, or management endpoint behavior.
 
+Read `references/spring-integration-boundary-rules.md` before editing outbound HTTP clients, Telegram/API clients, scheduled ingestion jobs, retries, timeouts, idempotency, message publishing, external DTO mapping, external integration tests, or Spring-managed adapters for independently deployed systems.
+
 For trivial localized changes, load only the references directly relevant to the changed behavior.
 
 ## Default workflow additions
