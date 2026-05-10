@@ -194,9 +194,9 @@ Failure signals: mocks the internal service and verifies `send(...)`; skips prov
 
 A Spring controller receives provider callbacks/webhooks. User asks: "Add support for this webhook event."
 
-Expected behavior: load integration boundary, web API, and security rules; validate provider signature/timestamp/replay protection according to existing conventions; preserve route and security configuration deliberately; avoid logging raw secrets or payloads; add tests for valid event, invalid signature, replay/old timestamp when applicable, unknown event type, and idempotent duplicate delivery.
+Expected behavior: load integration boundary, web API, and security rules; validate provider signature against the raw body or provider-specific canonical request before trusting deserialized DTOs when provider signing requires it; use timing-safe comparison for signatures/MACs when available; validate timestamp and replay protection according to existing conventions; preserve route and security configuration deliberately; avoid logging raw secrets or payloads; add tests for valid event, invalid signature, stale timestamp or replayed delivery id when the provider supports it, unknown event type, and idempotent duplicate delivery.
 
-Failure signals: trusts unauthenticated callbacks; disables security broadly; logs webhook secrets or signed headers; processes duplicate delivery twice; exposes broad actuator or debug endpoints to inspect callbacks.
+Failure signals: trusts unauthenticated callbacks; validates a signature only after converting the request into a trusted DTO when raw body/canonical request validation is required; compares signatures with ordinary string equality when a timing-safe primitive is available; ignores stale timestamps or replayed delivery ids; disables security broadly; logs webhook secrets or signed headers; processes duplicate delivery twice; exposes broad actuator or debug endpoints to inspect callbacks.
 
 ## Suggested scoring
 
