@@ -1,6 +1,6 @@
 # Spring Integration Boundary Rules
 
-Use this reference before changing Spring-managed outbound integrations, external API clients, scheduled ingestion jobs, retries, timeouts, idempotency, message publishing, or integration tests for external systems.
+Use this reference before changing Spring-managed outbound integrations, Spring-managed external API clients, external API clients participating in Spring bean wiring/configuration/testing boundaries, scheduled ingestion jobs, retries, timeouts, idempotency, message publishing, or integration tests for external systems.
 
 Examples include third-party HTTP APIs, Telegram bots or clients, RSS/news providers, payment providers, email/SMS providers, external auth providers, search services, object storage, independently deployed message brokers, LLM providers, and other systems outside the current application boundary.
 
@@ -9,7 +9,8 @@ Examples include third-party HTTP APIs, Telegram bots or clients, RSS/news provi
 For every external integration, consider:
 
 - connection, read, and total timeouts;
-- retry policy, max attempts, backoff, jitter, and retryable error classification;
+- retry policy, max attempts, retry budget, backoff, jitter, and retryable error classification;
+- provider throttling signals such as `Retry-After`;
 - idempotency and duplicate delivery;
 - rate limits, quotas, and provider throttling;
 - authentication, token refresh, and secret handling;
@@ -20,6 +21,10 @@ For every external integration, consider:
 - test doubles, contract fixtures, or containers according to project style.
 
 Do not add infinite retries, unbounded queues, silent fallbacks, swallowed provider errors, or blocking calls inside reactive flows.
+
+Do not retry non-repeatable write-like operations without an idempotency key, deduplication marker, or provider-supported replay protection.
+
+Do not combine retry and fallback in a way that makes provider failure invisible or turns a failed integration into a misleading successful application result.
 
 In reactive code paths, treat these as red flags unless the project already isolates them safely:
 
@@ -49,6 +54,10 @@ Do not introduce a new HTTP client library for a small integration change.
 
 Keep integration configuration centralized according to project conventions: base URL, timeouts, auth, default headers, serialization, error handling, retry policy, and observability.
 
+Keep base URL, timeout, retry, auth, and provider options in the project's existing configuration style. Prefer validated `@ConfigurationProperties` when the project uses it. Read `spring-configuration-rules.md` before adding or changing Spring configuration for external clients.
+
+Do not hard-code provider URLs, credentials, timeout values, retry counts, or magic constants inside client code.
+
 Do not build URLs through unsafe string concatenation when user-controlled or provider-controlled values are involved. Prefer URI builders, encoded path/query parameters, or existing client helpers.
 
 ## Boundary models
@@ -76,6 +85,12 @@ For polling/ingestion jobs, preserve checkpoints carefully and make processing r
 - interrupted runs;
 - overlapping scheduler executions;
 - provider rate limiting.
+
+Advance checkpoints only after durable and transactionally consistent processing.
+
+When ingestion combines database writes with message publishing or external side effects, look for existing outbox, after-commit, transactional event, or idempotent publisher patterns.
+
+Do not publish events or call external side-effecting APIs before the related database transaction is committed unless the project intentionally uses that pattern and the failure semantics are explicit.
 
 Do not hide failed ingestion with a successful application result unless the user explicitly requested best-effort behavior and the behavior is observable.
 
