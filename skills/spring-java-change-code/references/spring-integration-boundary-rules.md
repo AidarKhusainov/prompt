@@ -21,17 +21,29 @@ For every external integration, consider:
 
 Do not add infinite retries, unbounded queues, silent fallbacks, swallowed provider errors, or blocking calls inside reactive flows.
 
+In reactive code paths, treat these as red flags unless the project already isolates them safely:
+
+- `.block()` inside a reactive chain or event-loop path;
+- `.toFuture().get()` or other blocking future waits;
+- `Thread.sleep(...)`;
+- blocking provider SDK calls in reactive handlers, filters, controllers, schedulers, or operators;
+- wrapping blocking work in reactive code without following the project's scheduler/bounded-elastic/offloading pattern.
+
+If a blocking provider SDK is unavoidable, isolate it according to the project convention and make the blocking boundary explicit. Do not silently mix blocking provider calls into a reactive pipeline.
+
 ## Client style
 
 Use the project's existing integration style first:
 
-- `RestClient`;
-- `WebClient`;
-- `RestTemplate`;
+- `RestClient` when supported by the project Spring version and already used or appropriate for the local style;
+- `WebClient` when the project is reactive or already uses it for outbound clients;
+- `RestTemplate` when it is the existing project style or legacy convention;
 - OpenFeign or another existing declarative client;
-- Spring HTTP Service Clients;
+- Spring HTTP Service Clients when supported by the project Spring version and local conventions;
 - generated OpenAPI clients;
 - a project-specific adapter/gateway abstraction.
+
+Do not choose `WebClient` only because it is newer, and do not introduce `RestClient` into Spring generations that do not support it. Detect the project Spring version and follow `spring-version-policy.md` before changing client APIs.
 
 Do not introduce a new HTTP client library for a small integration change.
 
@@ -92,6 +104,12 @@ Do not commit sample real credentials in configuration, fixtures, docs, or tests
 
 For webhook or callback handlers, validate signatures, timestamps, replay protections, and content type according to project/provider conventions.
 
+When provider signatures depend on request bytes or canonical requests, verify the signature against the raw body or provider-specific canonical request before trusting deserialized DTOs.
+
+Use a timing-safe comparison for signatures or MACs when the project/platform provides one.
+
+Reject stale timestamps and replayed delivery ids/nonces when the provider supplies timestamp or replay-protection data.
+
 Treat provider allowlists, callback URLs, redirect URLs, and webhook exposure as security-sensitive changes.
 
 ## Operational visibility
@@ -111,4 +129,4 @@ Avoid high-cardinality metric tags such as raw URLs, user ids, message text, tit
 
 ## Permission gates
 
-Ask before adding a production dependency, changing provider-facing contracts, changing webhook exposure, changing scheduler cadence, changing retry/backoff semantics broadly, introducing a message broker/client framework, persisting raw provider payloads, or changing token/secret handling unless the user explicitly requested that change.
+Ask before adding a production dependency, changing provider-facing contracts, changing webhook exposure, changing scheduler cadence, changing retry/backoff semantics broadly, introducing Spring Retry, Resilience4j, a new HTTP client, a scheduler/retry framework, a message broker/client framework, persisting raw provider payloads, or changing token/secret handling unless the user explicitly requested that change.
