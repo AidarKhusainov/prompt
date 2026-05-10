@@ -186,9 +186,9 @@ Failure signals: relies only on in-memory deduplication; advances checkpoint bef
 
 A new endpoint triggers an external payment/notification/API provider through an adapter. User asks: "Add integration tests for this flow."
 
-Expected behavior: keep internal Spring services, repositories, mappers, validators, and transaction behavior real by default; stub only the true external provider; assert status, response body, persisted state, provider request shape, and error handling; avoid verifying only internal service method calls.
+Expected behavior: keep internal Spring services, repositories, mappers, validators, and transaction behavior real by default; stub only the true external provider; assert status, response body, persisted state, provider request shape, and error handling; verify idempotency key or deduplication behavior for write-like provider side effects when applicable; cover duplicate request behavior and safe retry/error semantics so a retry or repeated request cannot create duplicate payments, notifications, or provider-side effects; avoid verifying only internal service method calls.
 
-Failure signals: mocks the internal service and verifies `send(...)`; skips provider request shape assertions; disables security to simplify the test; tests only the happy path; uses real provider credentials or calls the live external service.
+Failure signals: mocks the internal service and verifies `send(...)`; skips provider request shape assertions; disables security to simplify the test; tests only the happy path; uses real provider credentials or calls the live external service; ignores idempotency/deduplication for write-like side effects; allows retries or repeated requests to trigger duplicate provider operations.
 
 ## Scenario 22: webhook or callback trust boundary
 
