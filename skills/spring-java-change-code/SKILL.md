@@ -1,6 +1,6 @@
 ---
 name: spring-java-change-code
-description: Use this skill as a Spring-specific overlay on top of java-change-code when the user asks to implement, fix, refactor, or test Java code in an existing Maven/Gradle Spring or Spring Boot application. Trigger when the requested change touches Spring-managed web, security, configuration, persistence, validation, testing, integrations, or application behavior. Do not trigger for pure Java logic inside a Spring repository when no Spring boundary or framework behavior is affected.
+description: Use this skill as a Spring-specific overlay on top of java-change-code when the user asks to implement, fix, refactor, or test Java code in an existing Maven/Gradle Spring or Spring Boot application. Trigger when the requested change touches Spring-managed web, security, configuration, persistence, validation, testing, Spring-managed external integrations, or application behavior. Do not trigger for pure Java logic inside a Spring repository when no Spring boundary or framework behavior is affected.
 ---
 
 # Spring Java Change Code Skill
@@ -21,12 +21,12 @@ Use this skill when Java Maven/Gradle work touches Spring-specific behavior such
 - Spring MVC or WebFlux controllers, request/response DTOs, validation, error mapping, filters, interceptors, route handling, or HTTP API contracts;
 - Spring Security, auth/authz, CSRF, CORS, sessions, tokens, security headers, method security, or actuator exposure;
 - Spring Data repositories, JPA behavior, transactions, configuration properties, profiles, auto-configuration, bean wiring, scheduled jobs, events, messaging, or framework-managed integration boundaries;
-- outbound HTTP clients, Telegram/news/RSS/provider clients, external API adapters, retries, timeouts, idempotency, webhook handlers, or scheduled ingestion flows;
+- Spring-managed outbound HTTP clients, Telegram/news/RSS/provider clients, external API adapters, retries, timeouts, idempotency, webhook handlers, or scheduled ingestion flows;
 - Spring testing, test slices, full-context integration tests, random-port HTTP tests, external integration stubs, or Testcontainers wiring.
 
 ## Do not use this skill when
 
-- The task is pure Java logic inside a Spring repository and no Spring boundary, Spring-managed behavior, public API, persistence, transaction, configuration, integration, or framework test behavior is affected. Use `java-change-code`.
+- The task is pure Java logic inside a Spring repository and no Spring boundary, Spring-managed behavior, public API, persistence, transaction, configuration, Spring-managed external integration, or framework test behavior is affected. Use `java-change-code`.
 - The repository/module is Kotlin-only and no Java Maven/Gradle code is relevant.
 - The task is architecture-only discussion, explanation, or planning without requested file changes.
 - The available repository has no Java Maven/Gradle Spring module relevant to the request.
@@ -56,10 +56,10 @@ Strong Spring signals include:
 - `JpaRepository`, `CrudRepository`, `PagingAndSortingRepository`, Spring Data repositories;
 - `application.yml`, `application.yaml`, or `application.properties` with `spring.*` configuration;
 - `@Scheduled`, Spring events, Spring messaging annotations, or Spring-managed integration adapters;
-- `RestClient`, `WebClient`, `RestTemplate`, Feign, Spring HTTP service interfaces, provider-specific clients, or webhook controllers;
+- `RestClient`, `WebClient`, `RestTemplate`, Feign, Spring HTTP service interfaces, Spring-managed provider-specific clients/adapters, provider clients participating in bean wiring/configuration, or webhook controllers;
 - `AutoConfiguration.imports` or `spring.factories`.
 
-Weak signals include mentions of `spring` in docs only, generic `@Transactional` before checking the import, and artifact names that merely contain `spring` without Spring code or build evidence.
+Weak signals include mentions of `spring` in docs only, generic `@Transactional` before checking the import, provider SDK/client wrappers without Spring imports/beans/configuration, and artifact names that merely contain `spring` without Spring code or build evidence.
 
 When Spring evidence is present but the requested change is pure Java logic with no framework behavior, use `java-change-code` and load Spring references only if the touched code crosses a Spring boundary.
 
