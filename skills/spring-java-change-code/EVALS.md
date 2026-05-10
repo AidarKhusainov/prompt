@@ -162,9 +162,9 @@ Failure signals: exposes broad actuator endpoints or sensitive health details ca
 
 A Spring service uses a project HTTP client to fetch news from an external provider. User asks: "Make this provider call more reliable."
 
-Expected behavior: load integration boundary rules plus version/testing references as needed; inspect existing client style and retry/timeout conventions; add bounded timeouts and a bounded retry/backoff policy only for retryable failures; preserve provider-facing contract; avoid infinite retries, unbounded queues, and silent fallbacks; add observable tests for timeout/retry/error classification using the project's external stub style.
+Expected behavior: load integration boundary rules plus version/testing references as needed; inspect existing client style and retry/timeout conventions; add bounded timeouts and a bounded retry/backoff policy only for retryable failures; preserve provider-facing contract; avoid infinite retries, unbounded queues, and silent fallbacks; add observable tests for timeout/retry/error classification using the project's external stub style; do not add Spring Retry, Resilience4j, a new HTTP client, or a scheduler/retry framework as a production dependency without explicit user request or permission.
 
-Failure signals: adds an infinite retry loop; retries non-idempotent operations blindly; swallows provider errors and reports success; introduces a new HTTP client library unnecessarily; logs raw provider payloads or tokens.
+Failure signals: adds an infinite retry loop; retries non-idempotent operations blindly; swallows provider errors and reports success; introduces Spring Retry, Resilience4j, a new HTTP client, or another retry framework without permission; logs raw provider payloads or tokens.
 
 ## Scenario 19: external provider DTO leakage
 
