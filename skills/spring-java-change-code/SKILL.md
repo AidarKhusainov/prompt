@@ -1,6 +1,6 @@
 ---
 name: spring-java-change-code
-description: Use this skill as a Spring-specific overlay on top of java-change-code when the user asks to implement, fix, refactor, or test Java code in an existing Maven/Gradle Spring or Spring Boot application. Trigger when the requested change touches Spring-managed web, security, configuration, persistence, validation, testing, or application behavior. Do not trigger for pure Java logic inside a Spring repository when no Spring boundary or framework behavior is affected.
+description: Use this skill as a Spring-specific overlay on top of java-change-code when the user asks to implement, fix, refactor, or test Java code in an existing Maven/Gradle Spring or Spring Boot application. Trigger when the requested change touches Spring-managed web, security, configuration, persistence, validation, testing, Spring-managed external integrations, or application behavior. Do not trigger for pure Java logic inside a Spring repository when no Spring boundary or framework behavior is affected.
 ---
 
 # Spring Java Change Code Skill
@@ -9,7 +9,7 @@ description: Use this skill as a Spring-specific overlay on top of java-change-c
 
 Implement focused code changes in existing Java Spring or Spring Boot Maven/Gradle repositories.
 
-This skill is an overlay on top of `java-change-code`. First follow `java-change-code`; this skill only adds Spring-specific detection, version policy, references, testing guidance, web/API rules, security gates, and persistence/transaction guardrails.
+This skill is an overlay on top of `java-change-code`. First follow `java-change-code`; this skill only adds Spring-specific detection, version policy, references, testing guidance, web/API rules, security gates, persistence/transaction guardrails, and integration-boundary guidance.
 
 Act as a senior Java/Spring engineer. Prefer simple, idiomatic, maintainable Spring code that follows the repository's current architecture, Spring versions, dependency management, and testing style.
 
@@ -21,11 +21,12 @@ Use this skill when Java Maven/Gradle work touches Spring-specific behavior such
 - Spring MVC or WebFlux controllers, request/response DTOs, validation, error mapping, filters, interceptors, route handling, or HTTP API contracts;
 - Spring Security, auth/authz, CSRF, CORS, sessions, tokens, security headers, method security, or actuator exposure;
 - Spring Data repositories, JPA behavior, transactions, configuration properties, profiles, auto-configuration, bean wiring, scheduled jobs, events, messaging, or framework-managed integration boundaries;
-- Spring testing, test slices, full-context integration tests, random-port HTTP tests, or Testcontainers wiring.
+- Spring-managed outbound HTTP clients, Telegram/news/RSS/provider clients, external API adapters, retries, timeouts, idempotency, webhook handlers, or scheduled ingestion flows;
+- Spring testing, test slices, full-context integration tests, random-port HTTP tests, external integration stubs, or Testcontainers wiring.
 
 ## Do not use this skill when
 
-- The task is pure Java logic inside a Spring repository and no Spring boundary, Spring-managed behavior, public API, persistence, transaction, configuration, or framework test behavior is affected. Use `java-change-code`.
+- The task is pure Java logic inside a Spring repository and no Spring boundary, Spring-managed behavior, public API, persistence, transaction, configuration, Spring-managed external integration, or framework test behavior is affected. Use `java-change-code`.
 - The repository/module is Kotlin-only and no Java Maven/Gradle code is relevant.
 - The task is architecture-only discussion, explanation, or planning without requested file changes.
 - The available repository has no Java Maven/Gradle Spring module relevant to the request.
@@ -54,9 +55,11 @@ Strong Spring signals include:
 - `SecurityFilterChain`, `@EnableWebSecurity`, `@PreAuthorize`, `@PostAuthorize`, method-security configuration;
 - `JpaRepository`, `CrudRepository`, `PagingAndSortingRepository`, Spring Data repositories;
 - `application.yml`, `application.yaml`, or `application.properties` with `spring.*` configuration;
+- `@Scheduled`, Spring events, Spring messaging annotations, or Spring-managed integration adapters;
+- `RestClient`, `WebClient`, `RestTemplate`, Feign, Spring HTTP service interfaces, Spring-managed provider-specific clients/adapters, provider clients participating in bean wiring/configuration, or webhook controllers;
 - `AutoConfiguration.imports` or `spring.factories`.
 
-Weak signals include mentions of `spring` in docs only, generic `@Transactional` before checking the import, and artifact names that merely contain `spring` without Spring code or build evidence.
+Weak signals include mentions of `spring` in docs only, generic `@Transactional` before checking the import, provider SDK/client wrappers without Spring imports/beans/configuration, and artifact names that merely contain `spring` without Spring code or build evidence.
 
 When Spring evidence is present but the requested change is pure Java logic with no framework behavior, use `java-change-code` and load Spring references only if the touched code crosses a Spring boundary.
 
@@ -68,13 +71,15 @@ Read `references/spring-version-policy.md` before editing when the task uses Spr
 
 Read `references/spring-web-api-rules.md` before editing when the task touches controllers, request/response DTOs, validation, serialization, deserialization, HTTP status codes, headers, error mapping, route contracts, filters, interceptors, or public API behavior.
 
-Read `references/spring-security-rules.md` before editing when the task touches authentication, authorization, CSRF, CORS, sessions, token handling, password handling, method security, tenant isolation, security headers, actuator exposure, security filter chains, or tests for secured behavior.
+Read `references/spring-security-rules.md` before editing when the task touches authentication, authorization, CSRF, CORS, sessions, token handling, password handling, method security, tenant isolation, security headers, actuator exposure, security filter chains, webhook/callback trust, or tests for secured behavior.
 
 Read `references/spring-testing-rules.md` before adding or changing Spring tests, choosing between unit/slice/integration/random-port tests, stubbing integrations, adding Testcontainers, or changing test configuration.
 
 Read `references/spring-jpa-transactions-rules.md` before editing Spring Data repositories, JPA entities, repository queries, transaction boundaries, schema/migration-adjacent persistence behavior, or tests that depend on real database semantics.
 
 Read `references/spring-configuration-rules.md` before editing application configuration, profiles, `@Configuration`, `@ConfigurationProperties`, conditional beans, auto-configuration, actuator exposure, or management endpoint behavior.
+
+Read `references/spring-integration-boundary-rules.md` before editing outbound HTTP clients, Telegram/news/RSS/provider clients, webhooks, external API adapters, scheduled ingestion jobs, retries, timeouts, idempotency, message publishing, provider DTOs, provider error mapping, or tests/stubs for external systems.
 
 For trivial localized changes, load only the references directly relevant to the changed behavior.
 
@@ -85,11 +90,12 @@ After the base `java-change-code` repository inspection:
 1. Detect Java, Spring Boot, Spring Framework, Spring Security, and Spring Data versions when relevant.
 2. Identify dependency management style: Spring Boot parent, BOM, Gradle plugin, version catalog, dependency locks, or corporate BOM.
 3. Identify the narrowest Spring boundary that proves the changed behavior.
-4. Preserve existing public API, JSON, validation, error, persistence, transaction, and security contracts unless explicitly requested.
+4. Preserve existing public API, JSON, validation, error, persistence, transaction, integration, and security contracts unless explicitly requested.
 5. Prefer observable-behavior tests at the narrowest reliable boundary.
 6. Keep internal Spring application components real by default in integration tests; stub true external integrations.
-7. Run the narrowest relevant Maven/Gradle verification command available for the owning module.
-8. Self-review for accidental contract, security, dependency, version, persistence, transaction, and test-scope regressions.
+7. For external integrations, explicitly consider timeouts, retries/backoff, idempotency, rate limits, provider error mapping, secrets, observability, and test doubles.
+8. Run the narrowest relevant Maven/Gradle verification command available for the owning module.
+9. Self-review for accidental contract, security, dependency, version, persistence, transaction, integration, and test-scope regressions.
 
 ## Permission gates
 
@@ -101,6 +107,7 @@ In addition to `java-change-code` gates, treat these as Spring-sensitive gated c
 - changing Spring Boot, Spring Framework, Spring Security, Java, Maven/Gradle wrapper, plugin, BOM, version catalog, or dependency-lock versions;
 - changing application configuration semantics, profile behavior, actuator exposure, management endpoint behavior, health details, management port, or management base path;
 - changing database schemas, migrations, transaction boundaries, or repository query semantics;
+- changing external provider-facing contracts, webhook exposure, scheduler cadence, retry/backoff semantics, token/secret handling, persisted raw provider payloads, or message publishing semantics;
 - introducing Testcontainers or heavy test infrastructure project-wide for a small change unless the project already uses it or infrastructure semantics are essential.
 
 If the user explicitly requested the gated change, do not ask again just to confirm it. Still call out compatibility, migration, rollback, security, test-data, and operational implications.
@@ -109,4 +116,4 @@ If the user explicitly requested the gated change, do not ask again just to conf
 
 Use `java-change-code` final response labels and verification statuses.
 
-In the final response, mention Spring-specific verification limitations when relevant, such as Docker/Testcontainers not available, external service stubs not runnable, random-port tests needing cleanup strategy, or security behavior not covered by existing tests.
+In the final response, mention Spring-specific verification limitations when relevant, such as Docker/Testcontainers not available, external service stubs not runnable, random-port tests needing cleanup strategy, provider sandbox unavailable, or security behavior not covered by existing tests.
