@@ -2,7 +2,7 @@
 
 Use this reference before changing Spring-managed outbound integrations, Spring-managed external API clients, external API clients participating in Spring bean wiring/configuration/testing boundaries, scheduled ingestion jobs, retries, timeouts, idempotency, message publishing, or integration tests for external systems.
 
-Examples include third-party HTTP APIs, Telegram bots or clients, RSS/news providers, payment providers, email/SMS providers, external auth providers, search services, object storage, independently deployed message brokers, LLM providers, and other systems outside the current application boundary.
+Examples include third-party HTTP APIs, webhook providers, side-effecting providers, notification providers, external auth providers, search services, object storage, independently deployed message brokers, LLM providers when relevant, and other systems outside the current application boundary.
 
 ## External systems are unreliable
 
@@ -140,7 +140,7 @@ For important integration flows, consider existing logging, metrics, and tracing
 - skipped, duplicate, accepted, and failed item counts;
 - checkpoint progress for ingestion jobs.
 
-Avoid high-cardinality metric tags such as raw URLs, user ids, message text, titles, provider payloads, exception messages, or arbitrary external ids.
+Avoid high-cardinality metric tags such as raw URLs, user ids, free-form text, resource titles or names, provider payloads, exception messages, or arbitrary external ids.
 
 ## Permission gates
 
