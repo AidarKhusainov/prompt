@@ -24,7 +24,7 @@ For each scenario, check whether the agent:
 
 ## Scenario 1: Spring routing strong signal
 
-A Maven or Gradle Java project contains `spring-boot-starter-web`, `@SpringBootApplication`, and a REST controller. User asks: "Add this field to the response of `GET /orders/{id}`."
+A Maven or Gradle Java project contains `spring-boot-starter-web`, `@SpringBootApplication`, and a REST controller. User asks: "Add this field to the response of `GET /items/{id}`."
 
 Expected behavior: route to `spring-java-change-code`; follow `java-change-code` first; load version and web API references; inspect DTOs, controller/service mapping, and existing web tests; preserve existing JSON fields, status codes, and error format; add or update an observable API test at the narrowest reliable boundary; run targeted Maven/Gradle tests.
 
@@ -32,7 +32,7 @@ Failure signals: uses only generic Java rules despite touching a Spring web API;
 
 ## Scenario 2: pure Java logic inside Spring repository
 
-A Spring Boot repository contains a pure Java price calculation class with no Spring imports and focused unit tests. User asks: "Change the rounding rule for this calculation."
+A Spring Boot repository contains a pure Java score calculation class with no Spring imports and focused unit tests. User asks: "Change the rounding rule for this calculation."
 
 Expected behavior: use `java-change-code`; keep the change in pure Java logic; add or update focused unit tests for edge cases and boundaries; avoid `@SpringBootTest` or Spring context tests.
 
@@ -64,11 +64,11 @@ Failure signals: disables CSRF globally; adds broad `permitAll`; disables filter
 
 ## Scenario 6: black-box API test boundary
 
-A new `POST /orders` endpoint creates an order and calls an external payment API through a project client abstraction. User asks: "Implement the endpoint and tests."
+A new `POST /items` endpoint creates an item and calls an external side-effecting provider through a project client abstraction. User asks: "Implement the endpoint and tests."
 
-Expected behavior: prefer observable API behavior tests through HTTP or existing web boundary; assert status, response body, validation errors, and persisted state or observable side effects; keep internal Spring services, repositories, mappers, and validators real in a full-flow test; stub/mock only the external payment API; add unit tests for pure business rules and edge cases when present.
+Expected behavior: prefer observable API behavior tests through HTTP or existing web boundary; assert status, response body, validation errors, and persisted state or observable side effects; keep internal Spring services, repositories, mappers, and validators real in a full-flow test; stub/mock only the external provider; add unit tests for pure business rules and edge cases when present.
 
-Failure signals: writes only a controller test that mocks `OrderService` and verifies `create(...)` was called; mocks repositories for real SQL/JPA semantics; skips observable assertions; adds unnecessary Testcontainers for pure logic.
+Failure signals: writes only a controller test that mocks `ItemService` and verifies `create(...)` was called; mocks repositories for real SQL/JPA semantics; skips observable assertions; adds unnecessary Testcontainers for pure logic.
 
 ## Scenario 7: slice test is the narrowest reliable boundary
 
@@ -80,7 +80,7 @@ Failure signals: starts full application context unnecessarily; tests only that 
 
 ## Scenario 8: random-port transaction cleanup
 
-An API test uses `@SpringBootTest(webEnvironment = RANDOM_PORT)` and writes to a real test database. User asks: "Add a black-box test for successful order creation."
+An API test uses `@SpringBootTest(webEnvironment = RANDOM_PORT)` and writes to a real test database. User asks: "Add a black-box test for successful item creation."
 
 Expected behavior: recognize server-side writes are not rolled back by a transactional test method; use existing cleanup, isolated test data, database cleanup utilities, rollback through API behavior, or container lifecycle; avoid relying on test-method transaction rollback for server-side changes.
 
@@ -160,7 +160,7 @@ Failure signals: exposes broad actuator endpoints or sensitive health details ca
 
 ## Scenario 18: outbound HTTP timeout and retry handling
 
-A Spring service uses a project HTTP client to fetch news from an external provider. User asks: "Make this provider call more reliable."
+A Spring service uses a project HTTP client to fetch items from an external provider. User asks: "Make this provider call more reliable."
 
 Expected behavior: load integration boundary rules plus version/testing references as needed; inspect existing client style and retry/timeout conventions; add bounded timeouts and a bounded retry/backoff policy only for retryable failures; preserve provider-facing contract; avoid infinite retries, unbounded queues, and silent fallbacks; add observable tests for timeout/retry/error classification using the project's external stub style; do not add Spring Retry, Resilience4j, a new HTTP client, or a scheduler/retry framework as a production dependency without explicit user request or permission.
 
@@ -168,7 +168,7 @@ Failure signals: adds an infinite retry loop; retries non-idempotent operations 
 
 ## Scenario 19: external provider DTO leakage
 
-A Telegram/news/RSS provider response DTO is used by an integration adapter. User asks: "Expose this provider data in our public API."
+An external provider response DTO is used by an integration adapter. User asks: "Expose this provider data in our public API."
 
 Expected behavior: load integration boundary and web API rules; keep provider DTOs at the integration boundary; map provider fields into explicit application/public DTOs; avoid exposing provider tokens, internal metadata, raw payloads, unstable fields, or excessive data; preserve existing API error and JSON conventions.
 
@@ -176,7 +176,7 @@ Failure signals: returns the provider DTO directly from a controller; persists r
 
 ## Scenario 20: scheduled ingestion idempotency and checkpoints
 
-A scheduled Spring job polls a news provider and persists new items. User asks: "Fix duplicate articles after provider pagination changes."
+A scheduled Spring job polls an external provider and persists new items. User asks: "Fix duplicate items after provider pagination changes."
 
 Expected behavior: load integration boundary, JPA/transaction, testing, and configuration references as relevant; inspect existing scheduler, checkpoint, deduplication, transaction, and lock/overlap strategy; make ingestion idempotent; handle duplicate, out-of-order, partial-page, interrupted-run, and rate-limit scenarios deliberately; add integration tests around observable persisted state and checkpoint behavior.
 
@@ -184,9 +184,9 @@ Failure signals: relies only on in-memory deduplication; advances checkpoint bef
 
 ## Scenario 21: external integration test boundary
 
-A new endpoint triggers an external payment/notification/API provider through an adapter. User asks: "Add integration tests for this flow."
+A new endpoint triggers an external side-effecting provider through an adapter. User asks: "Add integration tests for this flow."
 
-Expected behavior: keep internal Spring services, repositories, mappers, validators, and transaction behavior real by default; stub only the true external provider; assert status, response body, persisted state, provider request shape, and error handling; verify idempotency key or deduplication behavior for write-like provider side effects when applicable; cover duplicate request behavior and safe retry/error semantics so a retry or repeated request cannot create duplicate payments, notifications, or provider-side effects; avoid verifying only internal service method calls.
+Expected behavior: keep internal Spring services, repositories, mappers, validators, and transaction behavior real by default; stub only the true external provider; assert status, response body, persisted state, provider request shape, and error handling; verify idempotency key or deduplication behavior for write-like provider side effects when applicable; cover duplicate request behavior and safe retry/error semantics so a retry or repeated request cannot create duplicate external side effects; avoid verifying only internal service method calls.
 
 Failure signals: mocks the internal service and verifies `send(...)`; skips provider request shape assertions; disables security to simplify the test; tests only the happy path; uses real provider credentials or calls the live external service; ignores idempotency/deduplication for write-like side effects; allows retries or repeated requests to trigger duplicate provider operations.
 

@@ -21,7 +21,7 @@ Use this skill when Java Maven/Gradle work touches Spring-specific behavior such
 - Spring MVC or WebFlux controllers, request/response DTOs, validation, error mapping, filters, interceptors, route handling, or HTTP API contracts;
 - Spring Security, auth/authz, CSRF, CORS, sessions, tokens, security headers, method security, or actuator exposure;
 - Spring Data repositories, JPA behavior, transactions, configuration properties, profiles, auto-configuration, bean wiring, scheduled jobs, events, messaging, or framework-managed integration boundaries;
-- Spring-managed outbound HTTP clients, Telegram/news/RSS/provider clients, external API adapters, retries, timeouts, idempotency, webhook handlers, or scheduled ingestion flows;
+- Spring-managed outbound HTTP clients, provider clients, external API adapters, polling clients, retries, timeouts, idempotency, webhook handlers, or scheduled ingestion flows;
 - Spring testing, test slices, full-context integration tests, random-port HTTP tests, external integration stubs, or Testcontainers wiring.
 
 ## Do not use this skill when
@@ -79,7 +79,7 @@ Read `references/spring-jpa-transactions-rules.md` before editing Spring Data re
 
 Read `references/spring-configuration-rules.md` before editing application configuration, profiles, `@Configuration`, `@ConfigurationProperties`, conditional beans, auto-configuration, actuator exposure, or management endpoint behavior.
 
-Read `references/spring-integration-boundary-rules.md` before editing outbound HTTP clients, Telegram/news/RSS/provider clients, webhooks, external API adapters, scheduled ingestion jobs, retries, timeouts, idempotency, message publishing, provider DTOs, provider error mapping, or tests/stubs for external systems.
+Read `references/spring-integration-boundary-rules.md` before editing outbound HTTP clients, provider clients, external API adapters, polling clients, webhooks, scheduled ingestion jobs, retries, timeouts, idempotency, message publishing, provider DTOs, provider error mapping, or tests/stubs for external systems.
 
 For trivial localized changes, load only the references directly relevant to the changed behavior.
 
